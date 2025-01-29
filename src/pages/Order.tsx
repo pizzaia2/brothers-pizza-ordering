@@ -89,18 +89,18 @@ const Order = () => {
 
   const selectedSize = pizzaSizes.find((s) => s.id === size);
 
-  const orderTotal = useMemo(() => {
-    if (!selectedFlavors.length) return 0;
-    
-    const selectedPizzas = selectedFlavors.map(id => 
-      pizzaFlavors.find(flavor => flavor.id === id)
-    );
-    
-    const averagePrice = selectedPizzas.reduce((acc, pizza) => 
-      acc + (pizza?.price || 0), 0) / selectedFlavors.length;
-    
-    return averagePrice;
-  }, [selectedFlavors]);
+const orderTotal = useMemo(() => {
+  if (!selectedFlavors.length) return 0;
+
+  const selectedPizzas = selectedFlavors.map(id => 
+    pizzaFlavors.find(flavor => flavor.id === id)
+  );
+
+  const maxPrice = Math.max(...selectedPizzas.map(pizza => pizza?.price || 0));
+  
+  return maxPrice;
+}, [selectedFlavors]);
+
 
   const handleFlavorSelect = (flavorId: string) => {
     if (!selectedSize) return;
