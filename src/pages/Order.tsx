@@ -67,6 +67,7 @@ const pizzaFlavors: PizzaFlavor[] = [
   { id: "brigadeiro_morango", name: "Brigadeiro com Morango", description: "Muçarela, brigadeiro, morango e granulado", category: "doce", price: 40 },
   { id: "chocolate", name: "Chocolate", description: "Muçarela e chocolate ao leite", category: "doce", price: 40 },
   { id: "romeu_julieta", name: "Romeu e Julieta", description: "Muçarela e goiabada", category: "doce", price: 40 },
+  { id: "romeu_julieta", name: "Queijo Coalho com Goiabada", description: "Muçarela e goiabada", category: "doce", price: 42 },
 ];
 
 const Order = () => {
