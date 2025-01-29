@@ -1,1 +1,73 @@
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { Pizza } from "lucide-react";
+
+const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Tentativa de login com:", { username, password });
+
+    // Credenciais fixas para demonstração
+    if (username === "admin" && password === "admin") {
+      localStorage.setItem("isLoggedIn", "true");
+      toast({
+        title: "Login realizado com sucesso!",
+        description: "Bem-vindo ao painel administrativo.",
+      });
+      navigate("/admin");
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Erro no login",
+        description: "Usuário ou senha incorretos.",
+      });
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="p-8 bg-white rounded-lg shadow-lg w-full max-w-md">
+        <div className="flex flex-col items-center gap-2 mb-8">
+          <Pizza className="h-12 w-12 text-pizza-600" />
+          <h1 className="text-2xl font-bold text-gray-900">Admin Pizzaria</h1>
+          <p className="text-gray-600">Faça login para gerenciar os sabores</p>
+        </div>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <Input
+              type="text"
+              placeholder="Usuário"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full"
+            />
+          </div>
+          <div>
+            <Input
+              type="password"
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full"
+            />
+          </div>
+          <Button type="submit" className="w-full bg-pizza-600 hover:bg-pizza-700">
+            Entrar
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
