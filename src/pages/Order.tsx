@@ -595,7 +595,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                   className="w-full"
                   onClick={handleWhatsAppOrder}
                 >
-                  Confirmar Pedido no WhatsApp
+                  Confirmar Pedido
                 </Button>
               </div>
             )}
@@ -611,7 +611,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
               <div className="space-y-4">
                 <div>
                   <h3 className="font-bold text-primary mb-2">Horário de Funcionamento</h3>
-                  <p>Terça a Domingo</p>
+                  <p>Todos os dias</p>
                   <p>18:00 às 23:00</p>
                 </div>
                 
@@ -625,14 +625,14 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
               <div className="space-y-4">
                 <div>
                   <h3 className="font-bold text-primary mb-2">Contato</h3>
-                  <p>(75) 99166-2591</p>
+                  <p>(75) 98851-0206</p>
                   <p>brotherspizzaria@gmail.com</p>
                 </div>
                 
                 <div>
                   <h3 className="font-bold text-primary mb-2">Endereço</h3>
                   <p>Rua Antônio Balbino, 228</p>
-                  <p>Centro, Serrinha - BA</p>
+                  <p>Cajueiro, Saj - BA</p>
                 </div>
               </div>
             </div>
