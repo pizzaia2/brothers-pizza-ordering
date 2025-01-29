@@ -10,8 +10,8 @@ const Index = () => {
           <div className="relative text-center text-white z-10 px-4">
             <div className="text-center">
               <img 
-                src="https://i.ibb.co/xyz123/logo.png" 
-                alt="Logo Brother's Pizzaria" 
+                src="https://ibb.co/Fbnzk7xd" 
+                alt="Brother's Pizzaria" 
                 className="w-40 mx-auto mb-6" 
               />
             </div>
