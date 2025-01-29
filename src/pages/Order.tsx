@@ -208,7 +208,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                     }}
                   >
                     <div className="flex gap-1 mb-3">
-                      {Array.from({ length: Math.min(pizzaSize.slices / 2, 6) }).map((_, i) => (
+                      {Array.from({ length: Math.min(pizzaSize.slices / 2, 1) }).map((_, i) => (
                         <Pizza
                           key={i}
                           className={`w-5 h-5 ${
