@@ -25,14 +25,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
 interface PizzaSize {
   id: string;
   name: string;
   slices: number;
   maxFlavors: number;
 }
-
 interface PizzaFlavor {
   id: string;
   name: string;
@@ -40,13 +38,16 @@ interface PizzaFlavor {
   category: string;
   price: number;
 }
-
+interface Neighborhood {
+  id: string;
+  name: string;
+  deliveryFee: number;
+}
 const pizzaSizes: PizzaSize[] = [
   { id: "media", name: "Média", slices: 6, maxFlavors: 2 },
   { id: "grande", name: "Grande", slices: 8, maxFlavors: 3 },
   { id: "familia", name: "Família", slices: 12, maxFlavors: 4 },
 ];
-
 const pizzaFlavors: PizzaFlavor[] = [
   // Tradicionais
   { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35 },
@@ -55,13 +56,11 @@ const pizzaFlavors: PizzaFlavor[] = [
   { id: "mussarela", name: "Mussarela", description: "Molho de tomate, muçarela e orégano", category: "tradicional", price: 35 },
   { id: "calabresa", name: "Calabresa", description: "Molho de tomate, muçarela, orégano, cebola e calabresa", category: "tradicional", price: 35 },
   { id: "portuguesa", name: "Portuguesa", description: "Molho de tomate, muçarela, orégano, presunto, ovo, tomate, pimentão, cebola e azeitona", category: "tradicional", price: 38 },
-
   // Especiais
   { id: "atum", name: "Atum", description: "Molho de tomate, muçarela, orégano, atum e cebola", category: "especial", price: 42 },
   { id: "atum_catupiry", name: "Atum Catupiry", description: "Molho de tomate, muçarela, orégano, atum e catupiry", category: "especial", price: 45 },
   { id: "frango_catupiry", name: "Frango com Catupiry", description: "Molho de tomate, muçarela, orégano, frango e catupiry", category: "especial", price: 42 },
   { id: "quatro_queijos", name: "Quatro Queijos", description: "Molho de tomate, muçarela, orégano, parmesão, catupiry e gorgonzola", category: "especial", price: 45 },
-
   // Doces
   { id: "brigadeiro", name: "Brigadeiro", description: "Muçarela, brigadeiro e granulado", category: "doce", price: 40 },
   { id: "brigadeiro_morango", name: "Brigadeiro com Morango", description: "Muçarela, brigadeiro, morango e granulado", category: "doce", price: 40 },
@@ -69,7 +68,11 @@ const pizzaFlavors: PizzaFlavor[] = [
   { id: "romeu_julieta", name: "Romeu e Julieta", description: "Muçarela e goiabada", category: "doce", price: 40 },
   { id: "romeu_julieta", name: "Queijo Coalho com Goiabada", description: "Muçarela e goiabada", category: "doce", price: 42 },
 ];
-
+const neighborhoods: Neighborhood[] = [
+  { id: "centro", name: "Centro", deliveryFee: 8.00 },
+  { id: "santa_cruz", name: "Santa Cruz", deliveryFee: 8.00 },
+  { id: "santo_antonio", name: "Santo Antônio", deliveryFee: 7.00 }
+];
 const Order = () => {
   const { toast } = useToast();
   const [size, setSize] = useState("");
@@ -80,31 +83,28 @@ const Order = () => {
     street: "",
     neighborhood: "",
     number: "",
+    complement: "",
   });
   const [payment, setPayment] = useState("");
   const [needChange, setNeedChange] = useState(false);
   const [notes, setNotes] = useState("");
   const [removeIngredients, setRemoveIngredients] = useState("");
   const [showSummary, setShowSummary] = useState(false);
-
   const selectedSize = pizzaSizes.find((s) => s.id === size);
-
-const orderTotal = useMemo(() => {
-  if (!selectedFlavors.length) return 0;
-
-  const selectedPizzas = selectedFlavors.map(id => 
-    pizzaFlavors.find(flavor => flavor.id === id)
-  );
-
-  const maxPrice = Math.max(...selectedPizzas.map(pizza => pizza?.price || 0));
-  
-  return maxPrice;
-}, [selectedFlavors]);
-
-
+  const orderTotal = useMemo(() => {
+    if (!selectedFlavors.length) return 0;
+    const selectedPizzas = selectedFlavors.map(id => 
+      pizzaFlavors.find(flavor => flavor.id === id)
+    );
+    const maxPrice = Math.max(...selectedPizzas.map(pizza => pizza?.price || 0));
+    
+    const selectedNeighborhood = neighborhoods.find(n => n.id === address.neighborhood);
+    const deliveryFee = selectedNeighborhood?.deliveryFee || 0;
+    
+    return maxPrice + deliveryFee;
+  }, [selectedFlavors, address.neighborhood]);
   const handleFlavorSelect = (flavorId: string) => {
     if (!selectedSize) return;
-
     if (selectedFlavors.includes(flavorId)) {
       setSelectedFlavors(selectedFlavors.filter((id) => id !== flavorId));
     } else if (selectedFlavors.length < selectedSize.maxFlavors) {
@@ -116,7 +116,6 @@ const orderTotal = useMemo(() => {
       });
     }
   };
-
   const formatPhone = (value: string) => {
     const numbers = value.replace(/\D/g, "");
     if (numbers.length <= 11) {
@@ -124,46 +123,37 @@ const orderTotal = useMemo(() => {
     }
     return value;
   };
-
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhone(e.target.value);
     setPhone(formatted);
   };
-
   const generateOrderSummary = () => {
     const selectedFlavorNames = selectedFlavors
       .map((id) => pizzaFlavors.find((f) => f.id === id)?.name)
       .join(", ");
-
     const date = new Date();
     const formattedDate = date.toLocaleDateString();
     const formattedTime = date.toLocaleTimeString();
-
     return `*Pedido - Brother's Pizzaria*
 Data: ${formattedDate}
 Hora: ${formattedTime}
-
 *Tamanho:* ${selectedSize?.name}
 *Sabores:* ${selectedFlavorNames}
 ${notes ? `*Observações:* ${notes}\n` : ""}
 ${removeIngredients ? `*Retirar:* ${removeIngredients}\n` : ""}
-
 *Cliente:* ${name}
 *Telefone:* ${phone}
 *Endereço:* ${address.street}, ${address.number} - ${address.neighborhood}
 *Forma de Pagamento:* ${payment}
 ${needChange ? "Precisa de troco: Sim" : ""}
-
 Obrigado por realizar seu pedido.
 ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : ""}`;
   };
-
   const handleWhatsAppOrder = () => {
     const summary = generateOrderSummary();
     const encodedMessage = encodeURIComponent(summary);
     window.open(`https://wa.me/5575991662591?text=${encodedMessage}`, "_blank");
   };
-
   const handleVerifySummary = () => {
     if (!size || selectedFlavors.length === 0 || !name || !phone || !address.street || !payment) {
       toast({
@@ -175,7 +165,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
     }
     setShowSummary(true);
   };
-
   return (
     <div className="min-h-screen bg-secondary py-8">
       <div className="container max-w-4xl mx-auto px-4">
@@ -225,7 +214,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 ))}
               </div>
             </div>
-
             {size && (
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-primary">
@@ -275,7 +263,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                     </AccordionItem>
                   ))}
                 </Accordion>
-
                 {selectedFlavors.length > 0 && (
                   <div className="mt-8 p-6 bg-primary/5 rounded-lg">
                     <h4 className="text-xl font-bold text-primary mb-2">Valor do Pedido</h4>
@@ -284,7 +271,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 )}
               </div>
             )}
-
             <div className="space-y-4">
               <Label>Observações (opcional)</Label>
               <Textarea
@@ -293,7 +279,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 placeholder="Digite suas observações aqui..."
               />
             </div>
-
             <div className="space-y-4">
               <Label>Ingredientes para retirar (opcional)</Label>
               <Textarea
@@ -302,7 +287,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 placeholder="Digite os ingredientes que deseja retirar..."
               />
             </div>
-
             <div className="space-y-4">
               <Label>Nome</Label>
               <Input
@@ -312,7 +296,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 placeholder="Seu nome completo"
               />
             </div>
-
             <div className="space-y-4">
               <Label>Telefone</Label>
               <Input
@@ -323,7 +306,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 placeholder="(00) 00000-0000"
               />
             </div>
-
             <div className="space-y-4">
               <Label>Endereço</Label>
               <Input
@@ -335,15 +317,23 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 placeholder="Rua"
                 className="mb-2"
               />
-              <Input
-                required
+              <Select
                 value={address.neighborhood}
-                onChange={(e) =>
-                  setAddress({ ...address, neighborhood: e.target.value })
+                onValueChange={(value) =>
+                  setAddress({ ...address, neighborhood: value })
                 }
-                placeholder="Bairro"
-                className="mb-2"
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o bairro" />
+                </SelectTrigger>
+                <SelectContent>
+                  {neighborhoods.map((neighborhood) => (
+                    <SelectItem key={neighborhood.id} value={neighborhood.id}>
+                      {neighborhood.name} - Taxa: R$ {neighborhood.deliveryFee.toFixed(2)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Input
                 required
                 value={address.number}
@@ -352,19 +342,17 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 }
                 placeholder="Número"
                 type="text"
+                className="mt-2"
               />
-              
-  {/* Novo campo Complemento */}
-  <Input
-    value={address.complement}
-    onChange={(e) =>
-      setAddress({ ...address, complement: e.target.value })
-    }
-    placeholder="Complemento"
-    className="mb-2"
-  />
+              <Input
+                value={address.complement}
+                onChange={(e) =>
+                  setAddress({ ...address, complement: e.target.value })
+                }
+                placeholder="Complemento (opcional)"
+                className="mt-2"
+              />
             </div>
-
             <div className="space-y-4">
               <Label>Forma de Pagamento</Label>
               <Select value={payment} onValueChange={setPayment}>
@@ -379,7 +367,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 </SelectContent>
               </Select>
             </div>
-
             {(payment === "cash" || payment === "cash_card") && (
               <div className="space-y-4">
                 <Label>Precisa de troco?</Label>
@@ -397,7 +384,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 </Select>
               </div>
             )}
-
             {!showSummary ? (
               <Button
                 type="button"
@@ -430,5 +416,4 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
     </div>
   );
 };
-
 export default Order;
