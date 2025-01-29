@@ -38,7 +38,6 @@ interface PizzaFlavor {
   description: string;
   category: string;
   price: number;
-  available?: boolean; // Novo campo
 }
 interface Neighborhood {
   id: string;
@@ -52,7 +51,7 @@ const pizzaSizes: PizzaSize[] = [
   { id: "familia", name: "Família", slices: 12, maxFlavors: 4 },
 ];
 
-export const pizzaFlavors: PizzaFlavor[] = [
+const pizzaFlavors: PizzaFlavor[] = [
   // Tradicionais
   { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35 },
   { id: "bacalhau", name: "Bacalhau", description: "Molho de tomate, muçarela, orégano, azeitona e bacalhau", category: "tradicional", price: 35 },
@@ -138,18 +137,6 @@ const Order = () => {
   }, [cart, address.neighborhood, isPickup]);
 
   const handleFlavorSelect = (flavorId: string) => {
-    const flavor = pizzaFlavors.find(f => f.id === flavorId);
-    
-    // Verifica se o sabor está disponível
-    if (flavor?.available === false) {
-      toast({
-        title: "Sabor indisponível",
-        description: "Este sabor está temporariamente indisponível.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!selectedSize) return;
     if (selectedFlavors.includes(flavorId)) {
       setSelectedFlavors(selectedFlavors.filter((id) => id !== flavorId));
@@ -225,11 +212,11 @@ const Order = () => {
       
       return `
 Pizza ${index + 1}:
-Tamanho: ${sizeInfo?.name}
-Sabores: ${flavorNames}
-${item.notes ? `Observações: ${item.notes}\n` : ""}
-${item.removeIngredients ? `Retirar: ${item.removeIngredients}\n` : ""}
-Valor: R$ ${item.total.toFixed(2)}
+*Tamanho:* ${sizeInfo?.name}
+*Sabores:* ${flavorNames}
+${item.notes ? `*Observações:* ${item.notes}\n` : ""}
+${item.removeIngredients ? `*Retirar:* ${item.removeIngredients}\n` : ""}
+*Valor:* R$ ${item.total.toFixed(2)}
 `;
     }).join("\n");
 
@@ -238,20 +225,20 @@ Valor: R$ ${item.total.toFixed(2)}
     const formattedTime = date.toLocaleTimeString();
     
     const addressInfo = isPickup 
-      ? "Retirada no local" 
-      : `Endereço: ${address.street}, ${address.number} - ${neighborhoods.find(n => n.id === address.neighborhood)?.name}`;
+      ? "*Retirada no local*" 
+      : `*Endereço:* ${address.street}, ${address.number} - ${neighborhoods.find(n => n.id === address.neighborhood)?.name}`;
     
-    return `Pedido - Brother's Pizzaria
+    return `*Pedido - Brother's Pizzaria*
 Data: ${formattedDate}
 Hora: ${formattedTime}
 
 ${cartItemsSummary}
-Valor Total: R$ ${cartTotal.toFixed(2)}
+*Valor Total:* R$ ${cartTotal.toFixed(2)}
 
-Cliente: ${name}
-Telefone: ${phone}
+*Cliente:* ${name}
+*Telefone:* ${phone}
 ${addressInfo}
-Forma de Pagamento: ${payment}
+*Forma de Pagamento:* ${payment}
 ${needChange ? `Precisa de troco: Sim${changeAmount ? ` (Troco para R$ ${changeAmount})` : ""}` : ""}
 Obrigado por realizar seu pedido.
 ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : ""}`;
@@ -433,9 +420,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                               <div
                                 key={flavor.id}
                                 className={`p-4 rounded-lg cursor-pointer transition-all ${
-                                  flavor.available === false 
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : selectedFlavors.includes(flavor.id)
+                                  selectedFlavors.includes(flavor.id)
                                     ? "bg-primary/10 border-2 border-primary"
                                     : "hover:bg-primary/5 border-2 border-transparent"
                                 }`}
@@ -445,10 +430,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                                   <div className="space-y-1">
                                     <div className="flex items-center gap-2">
                                       <Pizza className="w-5 h-5 text-primary" />
-                                      <span className="font-bold">
-                                        {flavor.name}
-                                        {flavor.available === false && " (Indisponível)"}
-                                      </span>
+                                      <span className="font-bold">{flavor.name}</span>
                                       {selectedFlavors.includes(flavor.id) && (
                                         <Check className="w-5 h-5 text-primary" />
                                       )}
