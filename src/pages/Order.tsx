@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import React, { useState, useMemo } from "react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Card,
   CardContent,
@@ -25,6 +25,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface PizzaSize {
   id: string;
@@ -272,9 +273,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
           </CardHeader>
           <CardContent className="space-y-8">
             <div className="space-y-4">
-
- </div>
-            <div className="space-y-4">
               <Label>Nome</Label>
               <Input
                 required
@@ -339,10 +337,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 placeholder="Complemento (opcional)"
                 className="mt-2"
               />
-
-
-
-              
               <h3 className="text-2xl font-bold text-primary">Tamanho da Pizza</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {pizzaSizes.map((pizzaSize) => (
@@ -437,7 +431,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 
                 {selectedFlavors.length > 0 && (
                   <div className="mt-8 space-y-4">
-          
                     <Button
                       type="button"
                       className="w-full"
@@ -506,7 +499,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 onChange={(e) => setRemoveIngredients(e.target.value)}
                 placeholder="Digite os ingredientes que deseja retirar..."
               />
-            
             </div>
             <div className="space-y-4">
               <Label>Forma de Pagamento</Label>
@@ -537,6 +529,19 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                     <SelectItem value="no">Não</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            )}
+
+            {(payment === "cash" || payment === "cash_card") && needChange && (
+              <div className="space-y-4">
+                <Label htmlFor="changeAmount">Troco para quanto?</Label>
+                <Input
+                  id="changeAmount"
+                  type="number"
+                  placeholder="Digite o valor"
+                  min="0"
+                  step="0.01"
+                />
               </div>
             )}
 
