@@ -578,13 +578,10 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 type="button"
                 className="w-full"
                 onClick={handleVerifySummary}
-           <Button
-  type="button"
-  className="w-full bg-green-500 hover:bg-green-600 text-white text-xl font-bold"
-  onClick={handleWhatsAppOrder}
->
-  Verificar Resumo
-</Button>
+              >
+                Verificar Resumo
+              </Button>
+            ) : (
               <div className="space-y-4">
                 <Card>
                   <CardContent className="pt-6">
@@ -593,16 +590,13 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                     </pre>
                   </CardContent>
                 </Card>
-             <Button
-  type="button"
-  className="w-full bg-green-500 text-white hover:bg-green-600 text-xl font-bold"
-  onClick={handleWhatsAppOrder}
->
-  Confirmar Pedido
-</Button>
-
-
-
+                <Button
+                  type="button"
+                  className="w-full"
+                  onClick={handleWhatsAppOrder}
+                >
+                  Confirmar Pedido
+                </Button>
               </div>
             )}
           </CardContent>
