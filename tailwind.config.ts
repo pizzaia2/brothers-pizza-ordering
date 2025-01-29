@@ -55,7 +55,7 @@ export default {
         },
       },
       fontFamily: {
-        playfair: ["Playfair Display", "serif"],
+        quicksand: ["Quicksand", "sans-serif"],
         inter: ["Inter", "sans-serif"],
       },
       borderRadius: {

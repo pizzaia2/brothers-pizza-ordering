@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Card,
@@ -87,6 +87,19 @@ const Order = () => {
   const [showSummary, setShowSummary] = useState(false);
 
   const selectedSize = pizzaSizes.find((s) => s.id === size);
+
+  const orderTotal = useMemo(() => {
+    if (!selectedFlavors.length) return 0;
+    
+    const selectedPizzas = selectedFlavors.map(id => 
+      pizzaFlavors.find(flavor => flavor.id === id)
+    );
+    
+    const averagePrice = selectedPizzas.reduce((acc, pizza) => 
+      acc + (pizza?.price || 0), 0) / selectedFlavors.length;
+    
+    return averagePrice;
+  }, [selectedFlavors]);
 
   const handleFlavorSelect = (flavorId: string) => {
     if (!selectedSize) return;
@@ -251,7 +264,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                                     </p>
                                   </div>
                                   <span className="font-bold text-primary">
-                                    R$ {flavor.price}
+                                    R$ {flavor.price.toFixed(2)}
                                   </span>
                                 </div>
                               </div>
@@ -261,6 +274,13 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                     </AccordionItem>
                   ))}
                 </Accordion>
+
+                {selectedFlavors.length > 0 && (
+                  <div className="mt-8 p-6 bg-primary/5 rounded-lg">
+                    <h4 className="text-xl font-bold text-primary mb-2">Valor do Pedido</h4>
+                    <p className="text-2xl font-bold">R$ {orderTotal.toFixed(2)}</p>
+                  </div>
+                )}
               </div>
             )}
 
