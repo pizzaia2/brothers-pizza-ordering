@@ -366,10 +366,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 
                 {selectedFlavors.length > 0 && (
                   <div className="mt-8 space-y-4">
-                    <div className="p-6 bg-primary/5 rounded-lg">
-                      <h4 className="text-xl font-bold text-primary mb-2">Valor do Item</h4>
-                      <p className="text-2xl font-bold">R$ {orderTotal.toFixed(2)}</p>
-                    </div>
+          
                     <Button
                       type="button"
                       className="w-full"
