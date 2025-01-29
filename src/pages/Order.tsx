@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Pizza, Check } from "lucide-react";
+import { Pizza, Check, ShoppingCart, Trash2 } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -32,7 +32,6 @@ interface PizzaSize {
   slices: number;
   maxFlavors: number;
 }
-
 interface PizzaFlavor {
   id: string;
   name: string;
@@ -40,7 +39,6 @@ interface PizzaFlavor {
   category: string;
   price: number;
 }
-
 interface Neighborhood {
   id: string;
   name: string;
@@ -80,6 +78,14 @@ const neighborhoods: Neighborhood[] = [
   { id: "santo_antonio", name: "Santo Antônio", deliveryFee: 7.00 }
 ];
 
+interface CartItem {
+  size: string;
+  flavors: string[];
+  notes: string;
+  removeIngredients: string;
+  total: number;
+}
+
 const Order = () => {
   const { toast } = useToast();
   const [size, setSize] = useState("");
@@ -97,7 +103,10 @@ const Order = () => {
   const [notes, setNotes] = useState("");
   const [removeIngredients, setRemoveIngredients] = useState("");
   const [showSummary, setShowSummary] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  
   const selectedSize = pizzaSizes.find((s) => s.id === size);
+  
   const orderTotal = useMemo(() => {
     if (!selectedFlavors.length) return 0;
     const selectedPizzas = selectedFlavors.map(id => 
@@ -110,6 +119,14 @@ const Order = () => {
     
     return maxPrice + deliveryFee;
   }, [selectedFlavors, address.neighborhood]);
+
+  const cartTotal = useMemo(() => {
+    const itemsTotal = cart.reduce((sum, item) => sum + item.total, 0);
+    const selectedNeighborhood = neighborhoods.find(n => n.id === address.neighborhood);
+    const deliveryFee = selectedNeighborhood?.deliveryFee || 0;
+    return itemsTotal + (cart.length > 0 ? deliveryFee : 0);
+  }, [cart, address.neighborhood]);
+
   const handleFlavorSelect = (flavorId: string) => {
     if (!selectedSize) return;
     if (selectedFlavors.includes(flavorId)) {
@@ -123,6 +140,7 @@ const Order = () => {
       });
     }
   };
+
   const formatPhone = (value: string) => {
     const numbers = value.replace(/\D/g, "");
     if (numbers.length <= 11) {
@@ -130,25 +148,80 @@ const Order = () => {
     }
     return value;
   };
+
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatPhone(e.target.value);
     setPhone(formatted);
   };
+
+  const handleAddToCart = () => {
+    if (!size || selectedFlavors.length === 0) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Por favor, selecione o tamanho e os sabores da pizza.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newItem: CartItem = {
+      size,
+      flavors: selectedFlavors,
+      notes,
+      removeIngredients,
+      total: orderTotal - (neighborhoods.find(n => n.id === address.neighborhood)?.deliveryFee || 0),
+    };
+
+    setCart([...cart, newItem]);
+    
+    // Reset pizza selection
+    setSize("");
+    setSelectedFlavors([]);
+    setNotes("");
+    setRemoveIngredients("");
+
+    toast({
+      title: "Item adicionado ao carrinho",
+      description: "Sua pizza foi adicionada ao carrinho com sucesso!",
+    });
+  };
+
+  const handleRemoveFromCart = (index: number) => {
+    setCart(cart.filter((_, i) => i !== index));
+    toast({
+      title: "Item removido",
+      description: "O item foi removido do carrinho.",
+    });
+  };
+
   const generateOrderSummary = () => {
-    const selectedFlavorNames = selectedFlavors
-      .map((id) => pizzaFlavors.find((f) => f.id === id)?.name)
-      .join(", ");
+    const cartItemsSummary = cart.map((item, index) => {
+      const sizeInfo = pizzaSizes.find(s => s.id === item.size);
+      const flavorNames = item.flavors
+        .map(id => pizzaFlavors.find(f => f.id === id)?.name)
+        .join(", ");
+      
+      return `
+Pizza ${index + 1}:
+*Tamanho:* ${sizeInfo?.name}
+*Sabores:* ${flavorNames}
+${item.notes ? `*Observações:* ${item.notes}\n` : ""}
+${item.removeIngredients ? `*Retirar:* ${item.removeIngredients}\n` : ""}
+*Valor:* R$ ${item.total.toFixed(2)}
+`;
+    }).join("\n");
+
     const date = new Date();
     const formattedDate = date.toLocaleDateString();
     const formattedTime = date.toLocaleTimeString();
+    
     return `*Pedido - Brother's Pizzaria*
 Data: ${formattedDate}
 Hora: ${formattedTime}
-*Tamanho:* ${selectedSize?.name}
-*Sabores:* ${selectedFlavorNames}
-*Valor Total:* R$ ${orderTotal.toFixed(2)}
-${notes ? `*Observações:* ${notes}\n` : ""}
-${removeIngredients ? `*Retirar:* ${removeIngredients}\n` : ""}
+
+${cartItemsSummary}
+*Valor Total:* R$ ${cartTotal.toFixed(2)}
+
 *Cliente:* ${name}
 *Telefone:* ${phone}
 *Endereço:* ${address.street}, ${address.number} - ${address.neighborhood}
@@ -157,13 +230,18 @@ ${needChange ? "Precisa de troco: Sim" : ""}
 Obrigado por realizar seu pedido.
 ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : ""}`;
   };
-  const handleWhatsAppOrder = () => {
-    const summary = generateOrderSummary();
-    const encodedMessage = encodeURIComponent(summary);
-    window.open(`https://wa.me/5575991662591?text=${encodedMessage}`, "_blank");
-  };
+
   const handleVerifySummary = () => {
-    if (!size || selectedFlavors.length === 0 || !name || !phone || !address.street || !payment) {
+    if (cart.length === 0) {
+      toast({
+        title: "Carrinho vazio",
+        description: "Por favor, adicione pelo menos um item ao carrinho.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!name || !phone || !address.street || !payment) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos obrigatórios.",
@@ -173,10 +251,17 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
     }
     setShowSummary(true);
   };
+
+  const handleWhatsAppOrder = () => {
+    const summary = generateOrderSummary();
+    const encodedMessage = encodeURIComponent(summary);
+    window.open(`https://wa.me/5575991662591?text=${encodedMessage}`, "_blank");
+  };
+
   return (
     <div className="min-h-screen bg-secondary py-8">
       <div className="container max-w-4xl mx-auto px-4">
-        <Card className="mb-8 shadow-lg border">
+        <Card className="mb-8 shadow-lg border-2 border-primary/20">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-4xl font-bold text-primary">
               Fazer Pedido
@@ -222,6 +307,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 ))}
               </div>
             </div>
+            
             {size && (
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-primary">
@@ -277,8 +363,66 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                     <p className="text-2xl font-bold">R$ {orderTotal.toFixed(2)}</p>
                   </div>
                 )}
+                
+                {selectedFlavors.length > 0 && (
+                  <div className="mt-8 space-y-4">
+                    <div className="p-6 bg-primary/5 rounded-lg">
+                      <h4 className="text-xl font-bold text-primary mb-2">Valor do Item</h4>
+                      <p className="text-2xl font-bold">R$ {orderTotal.toFixed(2)}</p>
+                    </div>
+                    <Button
+                      type="button"
+                      className="w-full"
+                      onClick={handleAddToCart}
+                    >
+                      <ShoppingCart className="w-5 h-5 mr-2" />
+                      Adicionar ao Carrinho
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
+
+            {cart.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-2xl font-bold text-primary">Carrinho</h3>
+                <div className="space-y-4">
+                  {cart.map((item, index) => {
+                    const sizeInfo = pizzaSizes.find(s => s.id === item.size);
+                    const flavorNames = item.flavors
+                      .map(id => pizzaFlavors.find(f => f.id === id)?.name)
+                      .join(", ");
+                    
+                    return (
+                      <Card key={index}>
+                        <CardContent className="pt-6">
+                          <div className="flex justify-between items-start">
+                            <div className="space-y-2">
+                              <p className="font-bold">Pizza {index + 1}</p>
+                              <p>Tamanho: {sizeInfo?.name}</p>
+                              <p>Sabores: {flavorNames}</p>
+                              <p className="font-bold">R$ {item.total.toFixed(2)}</p>
+                            </div>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              onClick={() => handleRemoveFromCart(index)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                  <div className="p-6 bg-primary/5 rounded-lg">
+                    <h4 className="text-xl font-bold text-primary mb-2">Total do Carrinho</h4>
+                    <p className="text-2xl font-bold">R$ {cartTotal.toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-4">
               <Label>Observações (opcional)</Label>
               <Textarea
@@ -392,6 +536,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 </Select>
               </div>
             )}
+
             {!showSummary ? (
               <Button
                 type="button"
