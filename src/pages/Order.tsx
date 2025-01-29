@@ -1,4 +1,16 @@
-import { useState, useMemo } from "react";
+import
+ 
+{
+ 
+useState,
+ 
+useMemo
+ 
+}
+ 
+from
+ 
+"react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Card,
@@ -25,7 +37,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-interface PizzaSize {
+interface
+ 
+PizzaSize
+ 
+{
   id: string;
   name: string;
   slices: number;
@@ -139,6 +155,7 @@ Data: ${formattedDate}
 Hora: ${formattedTime}
 *Tamanho:* ${selectedSize?.name}
 *Sabores:* ${selectedFlavorNames}
+*Valor Total:* R$ ${orderTotal.toFixed(2)}
 ${notes ? `*Observações:* ${notes}\n` : ""}
 ${removeIngredients ? `*Retirar:* ${removeIngredients}\n` : ""}
 *Cliente:* ${name}
@@ -166,11 +183,12 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
     setShowSummary(true);
   };
   return (
-    <div className="min-h-screen bg-secondary py-8">
-      <div className="container max-w-4xl mx-auto px-4">
-        <Card className="mb-8 shadow-lg border-2 border-primary/20">
-          <CardHeader className="text-center space-y-2">
-            <CardTitle className="text-4xl font-bold text-primary">
+<div className="min-h-screen bg-secondary py-8">
+<div className="container max-w-4xl mx-auto px-4">
+<Card className="mb-8 shadow-lg border">
+border-2 border-primary/20
+<CardHeader className="text-center space-y-2">
+    <CardTitle className="text-4xl font-bold text-primary">
               Fazer Pedido
             </CardTitle>
             <CardDescription className="text-lg">
@@ -413,7 +431,8 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
           </CardContent>
         </Card>
       </div>
-    </div>
+  </div>
   );
 };
+
 export default Order;
