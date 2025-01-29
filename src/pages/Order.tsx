@@ -325,35 +325,45 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
             </div>
 
             <div className="space-y-4">
-              <Label>Endereço</Label>
-              <Input
-                required
-                value={address.street}
-                onChange={(e) =>
-                  setAddress({ ...address, street: e.target.value })
-                }
-                placeholder="Rua"
-                className="mb-2"
-              />
-              <Input
-                required
-                value={address.neighborhood}
-                onChange={(e) =>
-                  setAddress({ ...address, neighborhood: e.target.value })
-                }
-                placeholder="Bairro"
-                className="mb-2"
-              />
-              <Input
-                required
-                value={address.number}
-                onChange={(e) =>
-                  setAddress({ ...address, number: e.target.value })
-                }
-                placeholder="Número"
-                type="text"
-              />
-            </div>
+  <Label>Endereço</Label>
+  <Input
+    required
+    value={address.street}
+    onChange={(e) =>
+      setAddress({ ...address, street: e.target.value })
+    }
+    placeholder="Rua"
+    className="mb-2"
+  />
+  <Input
+    required
+    value={address.neighborhood}
+    onChange={(e) =>
+      setAddress({ ...address, neighborhood: e.target.value })
+    }
+    placeholder="Bairro"
+    className="mb-2"
+  />
+  <Input
+    required
+    value={address.number}
+    onChange={(e) =>
+      setAddress({ ...address, number: e.target.value })
+    }
+    placeholder="Número"
+    type="text"
+  />
+  
+  {/* Novo campo Complemento */}
+  <Input
+    value={address.complement}
+    onChange={(e) =>
+      setAddress({ ...address, complement: e.target.value })
+    }
+    placeholder="Complemento"
+    className="mb-2"
+  />
+</div>
 
             <div className="space-y-4">
               <Label>Forma de Pagamento</Label>
