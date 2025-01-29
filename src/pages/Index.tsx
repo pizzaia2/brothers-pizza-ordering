@@ -8,32 +8,19 @@ const Index = () => {
         <div className="relative h-[80vh] flex items-center justify-center bg-gradient-to-b from-primary-light to-primary">
           <div className="absolute inset-0 bg-black/40" />
           <div className="relative text-center text-white z-10 px-4">
-            <div className="text-center">
-              <img 
-                src="https://ibb.co/Fbnzk7xd" 
-                alt="Brother's Pizzaria" 
-                className="w-40 mx-auto mb-6" 
-              />
-            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 font-quicksand">Brother's Pizzaria</h1>
             <p className="text-xl md:text-2xl mb-8 font-quicksand">Fatias que unem</p>
             <Link 
               to="/order" 
               className="inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-full text-lg font-bold hover:bg-primary-light hover:text-white transition-all duration-300"
             >
-              FAZER PEDIDO
-            </Link>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-}
               <Pizza className="w-6 h-6" />
               FAZER PEDIDO
             </Link>
           </div>
         </div>
       </main>
+
 
       
       <footer className="bg-primary text-white py-12">
