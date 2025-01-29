@@ -1,16 +1,4 @@
-import
- 
-{
- 
-useState,
- 
-useMemo
- 
-}
- 
-from
- 
-"react";
+import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Card,
@@ -37,16 +25,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-interface
- 
-PizzaSize
- 
-{
+
+interface PizzaSize {
   id: string;
   name: string;
   slices: number;
   maxFlavors: number;
 }
+
 interface PizzaFlavor {
   id: string;
   name: string;
@@ -54,16 +40,19 @@ interface PizzaFlavor {
   category: string;
   price: number;
 }
+
 interface Neighborhood {
   id: string;
   name: string;
   deliveryFee: number;
 }
+
 const pizzaSizes: PizzaSize[] = [
   { id: "media", name: "Média", slices: 6, maxFlavors: 2 },
   { id: "grande", name: "Grande", slices: 8, maxFlavors: 3 },
   { id: "familia", name: "Família", slices: 12, maxFlavors: 4 },
 ];
+
 const pizzaFlavors: PizzaFlavor[] = [
   // Tradicionais
   { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35 },
@@ -82,13 +71,15 @@ const pizzaFlavors: PizzaFlavor[] = [
   { id: "brigadeiro_morango", name: "Brigadeiro com Morango", description: "Muçarela, brigadeiro, morango e granulado", category: "doce", price: 40 },
   { id: "chocolate", name: "Chocolate", description: "Muçarela e chocolate ao leite", category: "doce", price: 40 },
   { id: "romeu_julieta", name: "Romeu e Julieta", description: "Muçarela e goiabada", category: "doce", price: 40 },
-  { id: "romeu_julieta", name: "Queijo Coalho com Goiabada", description: "Muçarela e goiabada", category: "doce", price: 42 },
+  { id: "queijo_coalho_goiabada", name: "Queijo Coalho com Goiabada", description: "Muçarela e goiabada", category: "doce", price: 42 },
 ];
+
 const neighborhoods: Neighborhood[] = [
   { id: "centro", name: "Centro", deliveryFee: 8.00 },
   { id: "santa_cruz", name: "Santa Cruz", deliveryFee: 8.00 },
   { id: "santo_antonio", name: "Santo Antônio", deliveryFee: 7.00 }
 ];
+
 const Order = () => {
   const { toast } = useToast();
   const [size, setSize] = useState("");
@@ -183,12 +174,11 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
     setShowSummary(true);
   };
   return (
-<div className="min-h-screen bg-secondary py-8">
-<div className="container max-w-4xl mx-auto px-4">
-<Card className="mb-8 shadow-lg border">
-border-2 border-primary/20
-<CardHeader className="text-center space-y-2">
-    <CardTitle className="text-4xl font-bold text-primary">
+    <div className="min-h-screen bg-secondary py-8">
+      <div className="container max-w-4xl mx-auto px-4">
+        <Card className="mb-8 shadow-lg border">
+          <CardHeader className="text-center space-y-2">
+            <CardTitle className="text-4xl font-bold text-primary">
               Fazer Pedido
             </CardTitle>
             <CardDescription className="text-lg">
@@ -431,7 +421,7 @@ border-2 border-primary/20
           </CardContent>
         </Card>
       </div>
-  </div>
+    </div>
   );
 };
 
