@@ -25,6 +25,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Footer from "@/components/Footer";
 
 interface PizzaSize {
   id: string;
@@ -273,7 +274,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
   };
 
   return (
-    <div className="min-h-screen bg-secondary py-8">
+    <div className="min-h-screen bg-secondary py-8 pb-32">
       <div className="container max-w-4xl mx-auto px-4">
         <Card className="mb-8 shadow-lg border-2 border-primary/20">
           <CardHeader className="text-center space-y-2">
@@ -603,6 +604,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 };
