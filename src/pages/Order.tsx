@@ -591,12 +591,13 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                   </CardContent>
                 </Card>
                 <Button
-                  type="button"
-                  className="w-full"
-                  onClick={handleWhatsAppOrder}
-                >
-                  Confirmar Pedido
-                </Button>
+  type="button"
+  className="w-full bg-green-500 text-white hover:bg-green-600"
+  onClick={handleWhatsAppOrder}
+>
+  Confirmar Pedido
+</Button>
+
               </div>
             )}
           </CardContent>
