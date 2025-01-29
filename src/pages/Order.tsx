@@ -18,14 +18,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Pizza, Check, ShoppingCart, Trash2 } from "lucide-react";
+import { Pizza, Check, ShoppingCart, Trash2, MapPin } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface PizzaSize {
   id: string;
@@ -44,6 +43,7 @@ interface Neighborhood {
   id: string;
   name: string;
   deliveryFee: number;
+
 }
 
 const pizzaSizes: PizzaSize[] = [
@@ -93,6 +93,7 @@ const Order = () => {
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [isPickup, setIsPickup] = useState(false);
   const [address, setAddress] = useState({
     street: "",
     neighborhood: "",
@@ -101,6 +102,7 @@ const Order = () => {
   });
   const [payment, setPayment] = useState("");
   const [needChange, setNeedChange] = useState(false);
+  const [changeAmount, setChangeAmount] = useState("");
   const [notes, setNotes] = useState("");
   const [removeIngredients, setRemoveIngredients] = useState("");
   const [showSummary, setShowSummary] = useState(false);
@@ -115,18 +117,25 @@ const Order = () => {
     );
     const maxPrice = Math.max(...selectedPizzas.map(pizza => pizza?.price || 0));
     
-    const selectedNeighborhood = neighborhoods.find(n => n.id === address.neighborhood);
-    const deliveryFee = selectedNeighborhood?.deliveryFee || 0;
+    // Only add delivery fee if not pickup
+    if (!isPickup) {
+      const selectedNeighborhood = neighborhoods.find(n => n.id === address.neighborhood);
+      const deliveryFee = selectedNeighborhood?.deliveryFee || 0;
+      return maxPrice + deliveryFee;
+    }
     
-    return maxPrice + deliveryFee;
-  }, [selectedFlavors, address.neighborhood]);
+    return maxPrice;
+  }, [selectedFlavors, address.neighborhood, isPickup]);
 
   const cartTotal = useMemo(() => {
     const itemsTotal = cart.reduce((sum, item) => sum + item.total, 0);
-    const selectedNeighborhood = neighborhoods.find(n => n.id === address.neighborhood);
-    const deliveryFee = selectedNeighborhood?.deliveryFee || 0;
-    return itemsTotal + (cart.length > 0 ? deliveryFee : 0);
-  }, [cart, address.neighborhood]);
+    if (!isPickup) {
+      const selectedNeighborhood = neighborhoods.find(n => n.id === address.neighborhood);
+      const deliveryFee = selectedNeighborhood?.deliveryFee || 0;
+      return itemsTotal + (cart.length > 0 ? deliveryFee : 0);
+    }
+    return itemsTotal;
+  }, [cart, address.neighborhood, isPickup]);
 
   const handleFlavorSelect = (flavorId: string) => {
     if (!selectedSize) return;
@@ -170,7 +179,7 @@ const Order = () => {
       flavors: selectedFlavors,
       notes,
       removeIngredients,
-      total: orderTotal - (neighborhoods.find(n => n.id === address.neighborhood)?.deliveryFee || 0),
+      total: orderTotal - (!isPickup ? (neighborhoods.find(n => n.id === address.neighborhood)?.deliveryFee || 0) : 0),
     };
 
     setCart([...cart, newItem]);
@@ -216,6 +225,10 @@ ${item.removeIngredients ? `*Retirar:* ${item.removeIngredients}\n` : ""}
     const formattedDate = date.toLocaleDateString();
     const formattedTime = date.toLocaleTimeString();
     
+    const addressInfo = isPickup 
+      ? "*Retirada no local*" 
+      : `*Endereço:* ${address.street}, ${address.number} - ${neighborhoods.find(n => n.id === address.neighborhood)?.name}`;
+    
     return `*Pedido - Brother's Pizzaria*
 Data: ${formattedDate}
 Hora: ${formattedTime}
@@ -225,9 +238,9 @@ ${cartItemsSummary}
 
 *Cliente:* ${name}
 *Telefone:* ${phone}
-*Endereço:* ${address.street}, ${address.number} - ${address.neighborhood}
+${addressInfo}
 *Forma de Pagamento:* ${payment}
-${needChange ? "Precisa de troco: Sim" : ""}
+${needChange ? `Precisa de troco: Sim${changeAmount ? ` (Troco para R$ ${changeAmount})` : ""}` : ""}
 Obrigado por realizar seu pedido.
 ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : ""}`;
   };
@@ -242,7 +255,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
       return;
     }
     
-    if (!name || !phone || !address.street || !payment) {
+    if (!name || !phone || (!isPickup && !address.street) || !payment) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos obrigatórios.",
@@ -291,88 +304,104 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 placeholder="(00) 00000-0000"
               />
             </div>
-            <div className="space-y-4">
-              <Label>Endereço</Label>
-              <Input
-                required
-                value={address.street}
-                onChange={(e) =>
-                  setAddress({ ...address, street: e.target.value })
-                }
-                placeholder="Rua"
-                className="mb-2"
-              />
-              <Select
-                value={address.neighborhood}
-                onValueChange={(value) =>
-                  setAddress({ ...address, neighborhood: value })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o bairro" />
-                </SelectTrigger>
-                <SelectContent>
-                  {neighborhoods.map((neighborhood) => (
-                    <SelectItem key={neighborhood.id} value={neighborhood.id}>
-                      {neighborhood.name} - Taxa: R$ {neighborhood.deliveryFee.toFixed(2)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Input
-                required
-                value={address.number}
-                onChange={(e) =>
-                  setAddress({ ...address, number: e.target.value })
-                }
-                placeholder="Número"
-                type="text"
-                className="mt-2"
-              />
-              <Input
-                value={address.complement}
-                onChange={(e) =>
-                  setAddress({ ...address, complement: e.target.value })
-                }
-                placeholder="Complemento (opcional)"
-                className="mt-2"
-              />
-              <h3 className="text-2xl font-bold text-primary">Tamanho da Pizza</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {pizzaSizes.map((pizzaSize) => (
-                  <Button
-                    key={pizzaSize.id}
-                    type="button"
-                    variant={size === pizzaSize.id ? "default" : "outline"}
-                    className={`flex flex-col items-center p-6 h-auto transition-all ${
-                      size === pizzaSize.id
-                        ? "bg-primary text-white scale-105"
-                        : "hover:border-primary"
-                    }`}
-                    onClick={() => {
-                      setSize(pizzaSize.id);
-                      setSelectedFlavors([]);
-                    }}
-                  >
-                    <div className="flex gap-1 mb-3">
-                      {Array.from({ length: Math.min(pizzaSize.slices / 2, 1) }).map((_, i) => (
-                        <Pizza
-                          key={i}
-                          className={`w-5 h-5 ${
-                            size === pizzaSize.id ? "text-white" : "text-primary"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-lg font-bold">{pizzaSize.name}</span>
-                    <span className="text-sm mt-1">
-                      {pizzaSize.slices} fatias, {pizzaSize.maxFlavors} sabores
-                    </span>
-                  </Button>
-                ))}
-              </div>
-            </div>
             
+            <div className="space-y-4">
+              <Button
+                type="button"
+                variant={isPickup ? "default" : "outline"}
+                className="w-full"
+                onClick={() => setIsPickup(!isPickup)}
+              >
+                <MapPin className="w-5 h-5 mr-2" />
+                {isPickup ? "Retirar no local" : "Deseja retirar seu pedido?"}
+              </Button>
+            </div>
+
+            {!isPickup && (
+              <div className="space-y-4">
+                <Label>Endereço</Label>
+                <Input
+                  required
+                  value={address.street}
+                  onChange={(e) =>
+                    setAddress({ ...address, street: e.target.value })
+                  }
+                  placeholder="Rua"
+                  className="mb-2"
+                />
+                <Select
+                  value={address.neighborhood}
+                  onValueChange={(value) =>
+                    setAddress({ ...address, neighborhood: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o bairro" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {neighborhoods.map((neighborhood) => (
+                      <SelectItem key={neighborhood.id} value={neighborhood.id}>
+                        {neighborhood.name} - Taxa: R$ {neighborhood.deliveryFee.toFixed(2)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Input
+                  required
+                  value={address.number}
+                  onChange={(e) =>
+                    setAddress({ ...address, number: e.target.value })
+                  }
+                  placeholder="Número"
+                  type="text"
+                  className="mt-2"
+                />
+                <Input
+                  value={address.complement}
+                  onChange={(e) =>
+                    setAddress({ ...address, complement: e.target.value })
+                  }
+                  placeholder="Complemento (opcional)"
+                  className="mt-2"
+                />
+              </div>
+            )}
+
+            <h3 className="text-2xl font-bold text-primary">Tamanho da Pizza</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {pizzaSizes.map((pizzaSize) => (
+                <Button
+                  key={pizzaSize.id}
+                  type="button"
+                  variant={size === pizzaSize.id ? "default" : "outline"}
+                  className={`flex flex-col items-center p-6 h-auto transition-all ${
+                    size === pizzaSize.id
+                      ? "bg-primary text-white scale-105"
+                      : "hover:border-primary"
+                  }`}
+                  onClick={() => {
+                    setSize(pizzaSize.id);
+                    setSelectedFlavors([]);
+                  }}
+                >
+                  <div className="flex gap-1 mb-3">
+                    {Array.from({ length: Math.min(pizzaSize.slices / 2, 1) }).map((_, i) => (
+                      <Pizza
+                        key={i}
+                        className={`w-5 h-5 ${
+                          size === pizzaSize.id ? "text-white" : "text-primary"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-lg font-bold">{pizzaSize.name}</span>
+                  <span className="text-sm mt-1">
+                    {pizzaSize.slices} fatias, {pizzaSize.maxFlavors} sabores
+                  </span>
+                </Button>
+              ))}
+            </div>
+
             {size && (
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-primary">
@@ -537,10 +566,10 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 <Label htmlFor="changeAmount">Troco para quanto?</Label>
                 <Input
                   id="changeAmount"
-                  type="number"
+                  type="text"
                   placeholder="Digite o valor"
-                  min="0"
-                  step="0.01"
+                  value={changeAmount}
+                  onChange={(e) => setChangeAmount(e.target.value)}
                 />
               </div>
             )}
