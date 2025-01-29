@@ -25,7 +25,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Footer from "@/components/Footer";
 
 interface PizzaSize {
   id: string;
@@ -274,7 +273,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
   };
 
   return (
-    <div className="min-h-screen bg-secondary py-8 pb-32">
+    <div className="min-h-screen bg-secondary py-8">
       <div className="container max-w-4xl mx-auto px-4">
         <Card className="mb-8 shadow-lg border-2 border-primary/20">
           <CardHeader className="text-center space-y-2">
@@ -604,37 +603,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
           </CardContent>
         </Card>
       </div>
-      
-      {/* Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 p-4">
-        <div className="container mx-auto max-w-4xl">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <h3 className="font-bold text-primary mb-2">Horário de Funcionamento</h3>
-              <p>Terça a Domingo</p>
-              <p>18:00 às 23:00</p>
-            </div>
-            
-            <div>
-              <h3 className="font-bold text-primary mb-2">Tempo Médio de Entrega</h3>
-              <p>45-60 minutos</p>
-              <p>Dependendo da região</p>
-            </div>
-            
-            <div>
-              <h3 className="font-bold text-primary mb-2">Contato</h3>
-              <p>(75) 99166-2591</p>
-              <p>brotherspizzaria@gmail.com</p>
-            </div>
-            
-            <div>
-              <h3 className="font-bold text-primary mb-2">Endereço</h3>
-              <p>Rua Antônio Balbino, 228</p>
-              <p>Centro, Serrinha - BA</p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
