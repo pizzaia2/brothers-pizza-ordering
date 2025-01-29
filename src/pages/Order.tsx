@@ -325,86 +325,35 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
             </div>
 
             <div className="space-y-4">
-  <Label>Endereço</Label>
-  <Input
-    required
-    value={address.street}
-    onChange={(e) =>
-      setAddress({ ...address, street: e.target.value })
-    }
-    placeholder="Rua"
-    className="mb-2"
-  />
-  <Input
-    required
-    value={address.neighborhood}
-    onChange={(e) =>
-      setAddress({ ...address, neighborhood: e.target.value })
-    }
-    placeholder="Bairro"
-    className="mb-2"
-  />
-  <Input
-    required
-    value={address.number}
-    onChange={(e) =>
-      setAddress({ ...address, number: e.target.value })
-    }
-    placeholder="Número"
-    type="text"
-  import { useState } from 'react';
-
-const BairroSelection = () => {
-  const [selectedBairro, setSelectedBairro] = useState('');
-  const [taxa, setTaxa] = useState<number | null>(null);
-
-  // Lista de bairros com suas respectivas taxas
-  const bairros = [
-    { nome: 'Bairro A', taxa: 7 },
-    { nome: 'Bairro B', taxa: 7 },
-    { nome: 'Bairro C', taxa: 8 },
-  ];
-
-  const handleBairroChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const bairro = bairros.find(b => b.nome === e.target.value);
-    if (bairro) {
-      setSelectedBairro(bairro.nome);
-      setTaxa(bairro.taxa); // Atualiza a taxa com base no bairro selecionado
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <Label>Endereço</Label>
-      
-      <Input
-        required
-        value={selectedBairro}
-        onChange={handleBairroChange}
-        placeholder="Selecione o bairro"
-        className="mb-2"
-        as="select"
-      >
-        <option value="">Selecione...</option>
-        {bairros.map((bairro, index) => (
-          <option key={index} value={bairro.nome}>
-            {bairro.nome}
-          </option>
-        ))}
-      </Input>
-      
-      {/* Exibindo a taxa associada ao bairro selecionado */}
-      {taxa && (
-        <p className="text-sm text-gray-600">
-          Taxa: {taxa}%
-        </p>
-      )}
-    </div>
-  );
-};
-
-export default BairroSelection;
-
+              <Label>Endereço</Label>
+              <Input
+                required
+                value={address.street}
+                onChange={(e) =>
+                  setAddress({ ...address, street: e.target.value })
+                }
+                placeholder="Rua"
+                className="mb-2"
+              />
+              <Input
+                required
+                value={address.neighborhood}
+                onChange={(e) =>
+                  setAddress({ ...address, neighborhood: e.target.value })
+                }
+                placeholder="Bairro"
+                className="mb-2"
+              />
+              <Input
+                required
+                value={address.number}
+                onChange={(e) =>
+                  setAddress({ ...address, number: e.target.value })
+                }
+                placeholder="Número"
+                type="text"
+              />
+            </div>
 
             <div className="space-y-4">
               <Label>Forma de Pagamento</Label>
