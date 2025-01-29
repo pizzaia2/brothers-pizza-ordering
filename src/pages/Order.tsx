@@ -404,7 +404,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
             {size && (
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-primary">
-                  Escolha seus Sabores
+                  Escolha os sabores
                 </h3>
                 <Accordion type="single" collapsible className="w-full">
                   {["tradicional", "especial", "doce"].map((category) => (
