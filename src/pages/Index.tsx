@@ -9,18 +9,25 @@ const Index = () => {
           <div className="absolute inset-0 bg-black/40" />
           <div className="relative text-center text-white z-10 px-4">
             <div className="text-center">
- <img 
-  src="https://i.ibb.co/xyz123/logo.png" 
-  alt="Logo Brother's Pizzaria" 
-  className="w-40 mx-auto mb-6" 
-/>
-
-
+              <img 
+                src="https://i.ibb.co/xyz123/logo.png" 
+                alt="Logo Brother's Pizzaria" 
+                className="w-40 mx-auto mb-6" 
+              />
+            </div>
             <p className="text-xl md:text-2xl mb-8 font-quicksand">Fatias que unem</p>
             <Link 
               to="/order" 
               className="inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-full text-lg font-bold hover:bg-primary-light hover:text-white transition-all duration-300"
             >
+              FAZER PEDIDO
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
               <Pizza className="w-6 h-6" />
               FAZER PEDIDO
             </Link>
