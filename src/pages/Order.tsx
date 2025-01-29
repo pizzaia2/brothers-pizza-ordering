@@ -353,6 +353,16 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 placeholder="Número"
                 type="text"
               />
+              
+  {/* Novo campo Complemento */}
+  <Input
+    value={address.complement}
+    onChange={(e) =>
+      setAddress({ ...address, complement: e.target.value })
+    }
+    placeholder="Complemento"
+    className="mb-2"
+  />
             </div>
 
             <div className="space-y-4">
