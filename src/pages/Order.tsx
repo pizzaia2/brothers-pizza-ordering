@@ -30,25 +30,35 @@ interface PizzaSize {
 interface PizzaFlavor {
   id: string;
   name: string;
+  description: string;
   category: string;
   price: number;
 }
 
 const pizzaSizes: PizzaSize[] = [
-  { id: "media", name: "Média", slices: 2, maxFlavors: 2 },
-  { id: "grande", name: "Grande", slices: 3, maxFlavors: 3 },
-  { id: "familia", name: "Família", slices: 4, maxFlavors: 4 },
+  { id: "media", name: "Média", slices: 6, maxFlavors: 2 },
+  { id: "grande", name: "Grande", slices: 8, maxFlavors: 3 },
+  { id: "familia", name: "Família", slices: 12, maxFlavors: 4 },
 ];
 
 const pizzaFlavors: PizzaFlavor[] = [
   // Tradicionais
+  { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35 },
+  { id: "bacalhau", name: "Bacalhau", description: "Molho de tomate, muçarela, orégano, azeitona e bacalhau", category: "tradicional", price: 35 },
+  { id: "bacalhau_teriyaki", name: "Bacalhau Teriyaki", description: "Molho de tomate, muçarela, orégano, bacalhau, cream cheese, cebolinha e molho teriyaki", category: "tradicional", price: 38 },
   { id: "mussarela", name: "Mussarela", category: "tradicional", price: 35 },
   { id: "calabresa", name: "Calabresa", category: "tradicional", price: 35 },
   { id: "portuguesa", name: "Portuguesa", category: "tradicional", price: 38 },
+
   // Especiais
+  { id: "atum", name: "Atum", description: "Molho de tomate, muçarela, orégano, atum e cebola", category: "especial", price: 42 },
+  { id: "atum_catupiry", name: "Atum Catupiry", description: "Molho de tomate, muçarela, orégano, atum e catupiry", category: "especial", price: 45 },
   { id: "frango_catupiry", name: "Frango com Catupiry", category: "especial", price: 42 },
   { id: "quatro_queijos", name: "Quatro Queijos", category: "especial", price: 45 },
+
   // Doces
+  { id: "brigadeiro", name: "Brigadeiro", description: "Muçarela, brigadeiro e granulado", category: "doce", price: 40 },
+  { id: "brigadeiro_morango", name: "Brigadeiro com Morango", description: "Muçarela, brigadeiro, morango e granulado", category: "doce", price: 40 },
   { id: "chocolate", name: "Chocolate", category: "doce", price: 40 },
   { id: "romeu_julieta", name: "Romeu e Julieta", category: "doce", price: 40 },
 ];
