@@ -272,6 +272,77 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
           </CardHeader>
           <CardContent className="space-y-8">
             <div className="space-y-4">
+
+ </div>
+            <div className="space-y-4">
+              <Label>Nome</Label>
+              <Input
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Seu nome completo"
+              />
+            </div>
+            <div className="space-y-4">
+              <Label>Telefone</Label>
+              <Input
+                required
+                type="tel"
+                value={phone}
+                onChange={handlePhoneChange}
+                placeholder="(00) 00000-0000"
+              />
+            </div>
+            <div className="space-y-4">
+              <Label>Endereço</Label>
+              <Input
+                required
+                value={address.street}
+                onChange={(e) =>
+                  setAddress({ ...address, street: e.target.value })
+                }
+                placeholder="Rua"
+                className="mb-2"
+              />
+              <Select
+                value={address.neighborhood}
+                onValueChange={(value) =>
+                  setAddress({ ...address, neighborhood: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o bairro" />
+                </SelectTrigger>
+                <SelectContent>
+                  {neighborhoods.map((neighborhood) => (
+                    <SelectItem key={neighborhood.id} value={neighborhood.id}>
+                      {neighborhood.name} - Taxa: R$ {neighborhood.deliveryFee.toFixed(2)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                required
+                value={address.number}
+                onChange={(e) =>
+                  setAddress({ ...address, number: e.target.value })
+                }
+                placeholder="Número"
+                type="text"
+                className="mt-2"
+              />
+              <Input
+                value={address.complement}
+                onChange={(e) =>
+                  setAddress({ ...address, complement: e.target.value })
+                }
+                placeholder="Complemento (opcional)"
+                className="mt-2"
+              />
+
+
+
+              
               <h3 className="text-2xl font-bold text-primary">Tamanho da Pizza</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {pizzaSizes.map((pizzaSize) => (
@@ -435,72 +506,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 onChange={(e) => setRemoveIngredients(e.target.value)}
                 placeholder="Digite os ingredientes que deseja retirar..."
               />
-            </div>
-            <div className="space-y-4">
-              <Label>Nome</Label>
-              <Input
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Seu nome completo"
-              />
-            </div>
-            <div className="space-y-4">
-              <Label>Telefone</Label>
-              <Input
-                required
-                type="tel"
-                value={phone}
-                onChange={handlePhoneChange}
-                placeholder="(00) 00000-0000"
-              />
-            </div>
-            <div className="space-y-4">
-              <Label>Endereço</Label>
-              <Input
-                required
-                value={address.street}
-                onChange={(e) =>
-                  setAddress({ ...address, street: e.target.value })
-                }
-                placeholder="Rua"
-                className="mb-2"
-              />
-              <Select
-                value={address.neighborhood}
-                onValueChange={(value) =>
-                  setAddress({ ...address, neighborhood: value })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione o bairro" />
-                </SelectTrigger>
-                <SelectContent>
-                  {neighborhoods.map((neighborhood) => (
-                    <SelectItem key={neighborhood.id} value={neighborhood.id}>
-                      {neighborhood.name} - Taxa: R$ {neighborhood.deliveryFee.toFixed(2)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Input
-                required
-                value={address.number}
-                onChange={(e) =>
-                  setAddress({ ...address, number: e.target.value })
-                }
-                placeholder="Número"
-                type="text"
-                className="mt-2"
-              />
-              <Input
-                value={address.complement}
-                onChange={(e) =>
-                  setAddress({ ...address, complement: e.target.value })
-                }
-                placeholder="Complemento (opcional)"
-                className="mt-2"
-              />
+            
             </div>
             <div className="space-y-4">
               <Label>Forma de Pagamento</Label>
