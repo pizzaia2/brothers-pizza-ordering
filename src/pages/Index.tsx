@@ -9,12 +9,12 @@ const Index = () => {
           <div className="absolute inset-0 bg-black/40" />
           <div className="relative text-center text-white z-10 px-4">
             <div className="text-center">
-  <img 
-    src="https://discord.com/channels/1313849090886467594/1313849091335393380/1333995042750205984" 
-    alt="Logo Brother's Pizzaria" 
-    className="w-40 mx-auto mb-6" 
-  />
-</div>
+ <img 
+  src="https://i.ibb.co/xyz123/logo.png" 
+  alt="Logo Brother's Pizzaria" 
+  className="w-40 mx-auto mb-6" 
+/>
+
 
             <p className="text-xl md:text-2xl mb-8 font-quicksand">Fatias que unem</p>
             <Link 
