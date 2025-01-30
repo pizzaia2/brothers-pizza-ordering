@@ -334,11 +334,20 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
               <Button
                 type="button"
                 variant={isPickup ? "default" : "outline"}
-                className="w-full"
+                className={`w-full flex items-center justify-center gap-2 ${
+                  isPickup ? "bg-primary text-white" : ""
+                }`}
                 onClick={() => setIsPickup(!isPickup)}
               >
-                <MapPin className="w-5 h-5 mr-2" />
-                {isPickup ? "Retirar no local" : "Deseja retirar seu pedido?"}
+                <MapPin className="w-5 h-5" />
+                {isPickup ? (
+                  <span className="flex items-center gap-2">
+                    Retirar no local
+                    <Check className="w-5 h-5" />
+                  </span>
+                ) : (
+                  "Deseja retirar seu pedido?"
+                )}
               </Button>
             </div>
 
@@ -609,9 +618,10 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
             {!showSummary ? (
               <Button
                 type="button"
-                className="w-full"
+                className="w-full bg-primary text-white hover:bg-primary-dark"
                 onClick={handleVerifySummary}
               >
+                <ShoppingCart className="w-5 h-5 mr-2" />
                 Verificar Resumo
               </Button>
             ) : (
@@ -625,10 +635,11 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 </Card>
                 <Button
                   type="button"
-                  className="w-full"
+                  className="w-full py-6 text-lg bg-green-600 hover:bg-green-700 text-white transition-colors"
                   onClick={handleWhatsAppOrder}
                 >
-                  Confirmar Pedido
+                  <Check className="w-6 h-6 mr-2" />
+                  Confirmar Pedido no WhatsApp
                 </Button>
               </div>
             )}
