@@ -271,8 +271,34 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
     window.open(`https://wa.me/5575991662591?text=${encodedMessage}`, "_blank");
   };
 
+  const getCategoryGradient = (category: string) => {
+    switch (category) {
+      case "tradicional":
+        return "bg-gradient-to-r from-[#e6b980] to-[#eacda3]";
+      case "especial":
+        return "bg-gradient-to-r from-[#fdfcfb] to-[#e2d1c3]";
+      case "doce":
+        return "bg-gradient-to-r from-[#ffc3a0] to-[#ffafbd]";
+      default:
+        return "bg-primary/10";
+    }
+  };
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case "tradicional":
+        return "🍕";
+      case "especial":
+        return "⭐";
+      case "doce":
+        return "🍫";
+      default:
+        return "🍽️";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-secondary py-8 pb-32">
+    <div className="min-h-screen bg-secondary py-8">
       <div className="container max-w-4xl mx-auto px-4">
         <Card className="mb-8 shadow-lg border-2 border-primary/20">
           <CardHeader className="text-center space-y-2">
@@ -409,11 +435,18 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                 <Accordion type="single" collapsible className="w-full">
                   {["tradicional", "especial", "doce"].map((category) => (
                     <AccordionItem key={category} value={category}>
-                      <AccordionTrigger className="text-lg font-semibold capitalize">
-                        {category}s
+                      <AccordionTrigger 
+                        className={`text-lg font-semibold capitalize rounded-lg px-4 py-2 ${getCategoryGradient(category)} transition-all duration-200 hover:no-underline hover:scale-[1.02] group`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">{getCategoryIcon(category)}</span>
+                          <span className="text-primary-dark group-hover:text-primary-dark/80">
+                            {category}s
+                          </span>
+                        </div>
                       </AccordionTrigger>
-                      <AccordionContent>
-                        <div className="space-y-2">
+                      <AccordionContent className="mt-2">
+                        <div className="space-y-2 p-2">
                           {pizzaFlavors
                             .filter((flavor) => flavor.category === category)
                             .map((flavor) => (
@@ -421,8 +454,8 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                                 key={flavor.id}
                                 className={`p-4 rounded-lg cursor-pointer transition-all ${
                                   selectedFlavors.includes(flavor.id)
-                                    ? "bg-primary/10 border-2 border-primary"
-                                    : "hover:bg-primary/5 border-2 border-transparent"
+                                    ? "bg-primary/10 border-2 border-primary shadow-md"
+                                    : "hover:bg-primary/5 border-2 border-transparent hover:shadow-sm"
                                 }`}
                                 onClick={() => handleFlavorSelect(flavor.id)}
                               >
