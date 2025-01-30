@@ -86,6 +86,21 @@ interface CartItem {
   total: number;
 }
 
+const getPaymentMethodDisplay = (method: string) => {
+  switch (method) {
+    case "cash":
+      return "Dinheiro";
+    case "card":
+      return "Cartão";
+    case "pix":
+      return "PIX";
+    case "cash_card":
+      return "Dinheiro e Cartão";
+    default:
+      return method;
+  }
+};
+
 const Order = () => {
   const { toast } = useToast();
   const [size, setSize] = useState("");
@@ -238,7 +253,7 @@ ${cartItemsSummary}
 *Cliente:* ${name}
 *Telefone:* ${phone}
 ${addressInfo}
-*Forma de Pagamento:* ${payment}
+*Forma de Pagamento:* ${getPaymentMethodDisplay(payment)}
 ${needChange ? `Precisa de troco: Sim${changeAmount ? ` (Troco para R$ ${changeAmount})` : ""}` : ""}
 Obrigado por realizar seu pedido.
 ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : ""}`;

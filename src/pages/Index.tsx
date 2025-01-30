@@ -5,8 +5,13 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
-        <div className="relative h-[80vh] flex items-center justify-center bg-gradient-to-b from-primary-light to-primary">
-          <div className="absolute inset-0 bg-black/40" />
+        <div 
+          className="relative h-[80vh] flex items-center justify-center bg-cover bg-center"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1618160702438-9b02ab6515c9')",
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50" />
           <div className="relative text-center text-white z-10 px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 font-quicksand">Brother's Pizzaria</h1>
             <p className="text-xl md:text-2xl mb-8 font-quicksand">Fatias que unem</p>
@@ -21,8 +26,6 @@ const Index = () => {
         </div>
       </main>
 
-
-      
       <footer className="bg-primary text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
