@@ -16,7 +16,7 @@ const Index = () => {
         <div 
           className="relative h-[80vh] flex items-center justify-center bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1604382355076-af4b0eb60143?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+            backgroundImage: "url('https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=2076&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
           }}
         >
           <div className="absolute inset-0 bg-black/50" />
