@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { Home } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -313,353 +315,363 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
   };
 
   return (
-    <div className="min-h-screen bg-secondary py-8">
-      <div className="container max-w-4xl mx-auto px-4">
-        <Card className="mb-8 shadow-lg border-2 border-primary/20">
-          <CardHeader className="text-center space-y-2">
-            <CardTitle className="text-4xl font-bold text-primary">
-              Fazer Pedido
-            </CardTitle>
-            <CardDescription className="text-lg">
-              Monte sua pizza do seu jeito
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-8">
-            <div className="space-y-4">
-              <Label>Nome</Label>
-              <Input
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Seu nome completo"
-              />
-            </div>
-            <div className="space-y-4">
-              <Label>Telefone</Label>
-              <Input
-                required
-                type="tel"
-                value={phone}
-                onChange={handlePhoneChange}
-                placeholder="(00) 00000-0000"
-              />
-            </div>
-            
-            <div className="space-y-4">
-              <Button
-                type="button"
-                variant={isPickup ? "default" : "outline"}
-                className={`w-full flex items-center justify-center gap-2 ${
-                  isPickup ? "bg-primary text-white" : ""
-                }`}
-                onClick={() => setIsPickup(!isPickup)}
-              >
-                <MapPin className="w-5 h-5" />
-                {isPickup ? (
-                  <span className="flex items-center gap-2">
-                    Retirar no local
-                    <Check className="w-5 h-5" />
-                  </span>
-                ) : (
-                  "Deseja retirar seu pedido?"
-                )}
-              </Button>
-            </div>
+    <div className="min-h-screen bg-secondary">
+      <header className="bg-primary text-white py-4 px-6 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2 hover:text-secondary transition-colors">
+          <Home className="w-5 h-5" />
+          <span className="font-quicksand">Página inicial</span>
+        </Link>
+        <h2 className="font-quicksand font-bold text-xl">Brother's Pizzaria</h2>
+      </header>
 
-            {!isPickup && (
+      <div className="py-8">
+        <div className="container max-w-4xl mx-auto px-4">
+          <Card className="mb-8 shadow-lg border-2 border-primary/20">
+            <CardHeader className="text-center space-y-2">
+              <CardTitle className="text-4xl font-bold text-primary">
+                Fazer Pedido
+              </CardTitle>
+              <CardDescription className="text-lg">
+                Monte sua pizza do seu jeito
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
               <div className="space-y-4">
-                <Label>Endereço</Label>
+                <Label>Nome</Label>
                 <Input
                   required
-                  value={address.street}
-                  onChange={(e) =>
-                    setAddress({ ...address, street: e.target.value })
-                  }
-                  placeholder="Rua"
-                  className="mb-2"
-                />
-                <Select
-                  value={address.neighborhood}
-                  onValueChange={(value) =>
-                    setAddress({ ...address, neighborhood: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o bairro" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {neighborhoods.map((neighborhood) => (
-                      <SelectItem key={neighborhood.id} value={neighborhood.id}>
-                        {neighborhood.name} - Taxa: R$ {neighborhood.deliveryFee.toFixed(2)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Input
-                  required
-                  value={address.number}
-                  onChange={(e) =>
-                    setAddress({ ...address, number: e.target.value })
-                  }
-                  placeholder="Número"
-                  type="text"
-                  className="mt-2"
-                />
-                <Input
-                  value={address.complement}
-                  onChange={(e) =>
-                    setAddress({ ...address, complement: e.target.value })
-                  }
-                  placeholder="Complemento (opcional)"
-                  className="mt-2"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Seu nome completo"
                 />
               </div>
-            )}
-
-            <h3 className="text-2xl font-bold text-primary">Tamanho da Pizza</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {pizzaSizes.map((pizzaSize) => (
+              <div className="space-y-4">
+                <Label>Telefone</Label>
+                <Input
+                  required
+                  type="tel"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
+              
+              <div className="space-y-4">
                 <Button
-                  key={pizzaSize.id}
                   type="button"
-                  variant={size === pizzaSize.id ? "default" : "outline"}
-                  className={`flex flex-col items-center p-6 h-auto transition-all ${
-                    size === pizzaSize.id
-                      ? "bg-primary text-white scale-105"
-                      : "hover:border-primary"
+                  variant={isPickup ? "default" : "outline"}
+                  className={`w-full flex items-center justify-center gap-2 ${
+                    isPickup ? "bg-primary text-white" : ""
                   }`}
-                  onClick={() => {
-                    setSize(pizzaSize.id);
-                    setSelectedFlavors([]);
-                  }}
+                  onClick={() => setIsPickup(!isPickup)}
                 >
-                  <div className="flex gap-1 mb-3">
-                    {Array.from({ length: Math.min(pizzaSize.slices / 2, 1) }).map((_, i) => (
-                      <Pizza
-                        key={i}
-                        className={`w-5 h-5 ${
-                          size === pizzaSize.id ? "text-white" : "text-primary"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-lg font-bold">{pizzaSize.name}</span>
-                  <span className="text-sm mt-1">
-                    {pizzaSize.slices} fatias, {pizzaSize.maxFlavors} sabores
-                  </span>
+                  <MapPin className="w-5 h-5" />
+                  {isPickup ? (
+                    <span className="flex items-center gap-2">
+                      Retirar no local
+                      <Check className="w-5 h-5" />
+                    </span>
+                  ) : (
+                    "Deseja retirar seu pedido?"
+                  )}
                 </Button>
-              ))}
-            </div>
-
-            {size && (
-              <div className="space-y-6">
-                <h3 className="text-2xl font-bold text-primary">
-                  Escolha os sabores
-                </h3>
-                <Accordion type="single" collapsible className="w-full">
-                  {["tradicional", "especial", "doce"].map((category) => (
-                    <AccordionItem key={category} value={category}>
-                      <AccordionTrigger 
-                        className={`text-lg font-semibold capitalize rounded-lg px-4 py-2 ${getCategoryGradient(category)} transition-all duration-200 hover:no-underline hover:scale-[1.02] group`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="text-2xl">{getCategoryIcon(category)}</span>
-                          <span className="text-primary-dark group-hover:text-primary-dark/80">
-                            {category}s
-                          </span>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="mt-2">
-                        <div className="space-y-2 p-2">
-                          {pizzaFlavors
-                            .filter((flavor) => flavor.category === category)
-                            .map((flavor) => (
-                              <div
-                                key={flavor.id}
-                                className={`p-4 rounded-lg cursor-pointer transition-all ${
-                                  selectedFlavors.includes(flavor.id)
-                                    ? "bg-primary/10 border-2 border-primary shadow-md"
-                                    : "hover:bg-primary/5 border-2 border-transparent hover:shadow-sm"
-                                }`}
-                                onClick={() => handleFlavorSelect(flavor.id)}
-                              >
-                                <div className="flex items-start justify-between">
-                                  <div className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                      <Pizza className="w-5 h-5 text-primary" />
-                                      <span className="font-bold">{flavor.name}</span>
-                                      {selectedFlavors.includes(flavor.id) && (
-                                        <Check className="w-5 h-5 text-primary" />
-                                      )}
-                                    </div>
-                                    <p className="text-sm text-gray-600">
-                                      {flavor.description}
-                                    </p>
-                                  </div>
-                                  <span className="font-bold text-primary">
-                                    R$ {flavor.price.toFixed(2)}
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-                {selectedFlavors.length > 0 && (
-                  <div className="mt-8 p-6 bg-primary/5 rounded-lg">
-                    <h4 className="text-xl font-bold text-primary mb-2">Valor do Pedido</h4>
-                    <p className="text-2xl font-bold">R$ {orderTotal.toFixed(2)}</p>
-                  </div>
-                )}
-                
-                {selectedFlavors.length > 0 && (
-                  <div className="mt-8 space-y-4">
-                    <Button
-                      type="button"
-                      className="w-full"
-                      onClick={handleAddToCart}
-                    >
-                      <ShoppingCart className="w-5 h-5 mr-2" />
-                      Adicionar ao Carrinho
-                    </Button>
-                  </div>
-                )}
               </div>
-            )}
 
-            {cart.length > 0 && (
-              <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-primary">Carrinho</h3>
+              {!isPickup && (
                 <div className="space-y-4">
-                  {cart.map((item, index) => {
-                    const sizeInfo = pizzaSizes.find(s => s.id === item.size);
-                    const flavorNames = item.flavors
-                      .map(id => pizzaFlavors.find(f => f.id === id)?.name)
-                      .join(", ");
-                    
-                    return (
-                      <Card key={index}>
-                        <CardContent className="pt-6">
-                          <div className="flex justify-between items-start">
-                            <div className="space-y-2">
-                              <p className="font-bold">Pizza {index + 1}</p>
-                              <p>Tamanho: {sizeInfo?.name}</p>
-                              <p>Sabores: {flavorNames}</p>
-                              <p className="font-bold">R$ {item.total.toFixed(2)}</p>
-                            </div>
-                            <Button
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => handleRemoveFromCart(index)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
+                  <Label>Endereço</Label>
+                  <Input
+                    required
+                    value={address.street}
+                    onChange={(e) =>
+                      setAddress({ ...address, street: e.target.value })
+                    }
+                    placeholder="Rua"
+                    className="mb-2"
+                  />
+                  <Select
+                    value={address.neighborhood}
+                    onValueChange={(value) =>
+                      setAddress({ ...address, neighborhood: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o bairro" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {neighborhoods.map((neighborhood) => (
+                        <SelectItem key={neighborhood.id} value={neighborhood.id}>
+                          {neighborhood.name} - Taxa: R$ {neighborhood.deliveryFee.toFixed(2)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    required
+                    value={address.number}
+                    onChange={(e) =>
+                      setAddress({ ...address, number: e.target.value })
+                    }
+                    placeholder="Número"
+                    type="text"
+                    className="mt-2"
+                  />
+                  <Input
+                    value={address.complement}
+                    onChange={(e) =>
+                      setAddress({ ...address, complement: e.target.value })
+                    }
+                    placeholder="Complemento (opcional)"
+                    className="mt-2"
+                  />
+                </div>
+              )}
+
+              <h3 className="text-2xl font-bold text-primary">Tamanho da Pizza</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {pizzaSizes.map((pizzaSize) => (
+                  <Button
+                    key={pizzaSize.id}
+                    type="button"
+                    variant={size === pizzaSize.id ? "default" : "outline"}
+                    className={`flex flex-col items-center p-6 h-auto transition-all ${
+                      size === pizzaSize.id
+                        ? "bg-primary text-white scale-105"
+                        : "hover:border-primary"
+                    }`}
+                    onClick={() => {
+                      setSize(pizzaSize.id);
+                      setSelectedFlavors([]);
+                    }}
+                  >
+                    <div className="flex gap-1 mb-3">
+                      {Array.from({ length: Math.min(pizzaSize.slices / 2, 1) }).map((_, i) => (
+                        <Pizza
+                          key={i}
+                          className={`w-5 h-5 ${
+                            size === pizzaSize.id ? "text-white" : "text-primary"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-lg font-bold">{pizzaSize.name}</span>
+                    <span className="text-sm mt-1">
+                      {pizzaSize.slices} fatias, {pizzaSize.maxFlavors} sabores
+                    </span>
+                  </Button>
+                ))}
+              </div>
+
+              {size && (
+                <div className="space-y-6">
+                  <h3 className="text-2xl font-bold text-primary">
+                    Escolha os sabores
+                  </h3>
+                  <Accordion type="single" collapsible className="w-full">
+                    {["tradicional", "especial", "doce"].map((category) => (
+                      <AccordionItem key={category} value={category}>
+                        <AccordionTrigger 
+                          className={`text-lg font-semibold capitalize rounded-lg px-4 py-2 ${getCategoryGradient(category)} transition-all duration-200 hover:no-underline hover:scale-[1.02] group`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="text-2xl">{getCategoryIcon(category)}</span>
+                            <span className="text-primary-dark group-hover:text-primary-dark/80">
+                              {category}s
+                            </span>
                           </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                  <div className="p-6 bg-primary/5 rounded-lg">
-                    <h4 className="text-xl font-bold text-primary mb-2">Total do Carrinho</h4>
-                    <p className="text-2xl font-bold">R$ {cartTotal.toFixed(2)}</p>
+                        </AccordionTrigger>
+                        <AccordionContent className="mt-2">
+                          <div className="space-y-2 p-2">
+                            {pizzaFlavors
+                              .filter((flavor) => flavor.category === category)
+                              .map((flavor) => (
+                                <div
+                                  key={flavor.id}
+                                  className={`p-4 rounded-lg cursor-pointer transition-all ${
+                                    selectedFlavors.includes(flavor.id)
+                                      ? "bg-primary/10 border-2 border-primary shadow-md"
+                                      : "hover:bg-primary/5 border-2 border-transparent hover:shadow-sm"
+                                  }`}
+                                  onClick={() => handleFlavorSelect(flavor.id)}
+                                >
+                                  <div className="flex items-start justify-between">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-2">
+                                        <Pizza className="w-5 h-5 text-primary" />
+                                        <span className="font-bold">{flavor.name}</span>
+                                        {selectedFlavors.includes(flavor.id) && (
+                                          <Check className="w-5 h-5 text-primary" />
+                                        )}
+                                      </div>
+                                      <p className="text-sm text-gray-600">
+                                        {flavor.description}
+                                      </p>
+                                    </div>
+                                    <span className="font-bold text-primary">
+                                      R$ {flavor.price.toFixed(2)}
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                  {selectedFlavors.length > 0 && (
+                    <div className="mt-8 p-6 bg-primary/5 rounded-lg">
+                      <h4 className="text-xl font-bold text-primary mb-2">Valor do Pedido</h4>
+                      <p className="text-2xl font-bold">R$ {orderTotal.toFixed(2)}</p>
+                    </div>
+                  )}
+                  
+                  {selectedFlavors.length > 0 && (
+                    <div className="mt-8 space-y-4">
+                      <Button
+                        type="button"
+                        className="w-full"
+                        onClick={handleAddToCart}
+                      >
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        Adicionar ao Carrinho
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {cart.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold text-primary">Carrinho</h3>
+                  <div className="space-y-4">
+                    {cart.map((item, index) => {
+                      const sizeInfo = pizzaSizes.find(s => s.id === item.size);
+                      const flavorNames = item.flavors
+                        .map(id => pizzaFlavors.find(f => f.id === id)?.name)
+                        .join(", ");
+                      
+                      return (
+                        <Card key={index}>
+                          <CardContent className="pt-6">
+                            <div className="flex justify-between items-start">
+                              <div className="space-y-2">
+                                <p className="font-bold">Pizza {index + 1}</p>
+                                <p>Tamanho: {sizeInfo?.name}</p>
+                                <p>Sabores: {flavorNames}</p>
+                                <p className="font-bold">R$ {item.total.toFixed(2)}</p>
+                              </div>
+                              <Button
+                                variant="destructive"
+                                size="icon"
+                                onClick={() => handleRemoveFromCart(index)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                    <div className="p-6 bg-primary/5 rounded-lg">
+                      <h4 className="text-xl font-bold text-primary mb-2">Total do Carrinho</h4>
+                      <p className="text-2xl font-bold">R$ {cartTotal.toFixed(2)}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div className="space-y-4">
-              <Label>Observações (opcional)</Label>
-              <Textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Digite suas observações aqui..."
-              />
-            </div>
-            <div className="space-y-4">
-              <Label>Ingredientes para retirar (opcional)</Label>
-              <Textarea
-                value={removeIngredients}
-                onChange={(e) => setRemoveIngredients(e.target.value)}
-                placeholder="Digite os ingredientes que deseja retirar..."
-              />
-            </div>
-            <div className="space-y-4">
-              <Label>Forma de Pagamento</Label>
-              <Select value={payment} onValueChange={setPayment}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione a forma de pagamento" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pix">PIX</SelectItem>
-                  <SelectItem value="card">Cartão de crédito/débito</SelectItem>
-                  <SelectItem value="cash">Dinheiro</SelectItem>
-                  <SelectItem value="cash_card">Dinheiro e cartão</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {(payment === "cash" || payment === "cash_card") && (
               <div className="space-y-4">
-                <Label>Precisa de troco?</Label>
-                <Select
-                  value={needChange ? "yes" : "no"}
-                  onValueChange={(value) => setNeedChange(value === "yes")}
-                >
+                <Label>Observações (opcional)</Label>
+                <Textarea
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Digite suas observações aqui..."
+                />
+              </div>
+              <div className="space-y-4">
+                <Label>Ingredientes para retirar (opcional)</Label>
+                <Textarea
+                  value={removeIngredients}
+                  onChange={(e) => setRemoveIngredients(e.target.value)}
+                  placeholder="Digite os ingredientes que deseja retirar..."
+                />
+              </div>
+              <div className="space-y-4">
+                <Label>Forma de Pagamento</Label>
+                <Select value={payment} onValueChange={setPayment}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione se precisa de troco" />
+                    <SelectValue placeholder="Selecione a forma de pagamento" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="yes">Sim</SelectItem>
-                    <SelectItem value="no">Não</SelectItem>
+                    <SelectItem value="pix">PIX</SelectItem>
+                    <SelectItem value="card">Cartão de crédito/débito</SelectItem>
+                    <SelectItem value="cash">Dinheiro</SelectItem>
+                    <SelectItem value="cash_card">Dinheiro e cartão</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-            )}
+              {(payment === "cash" || payment === "cash_card") && (
+                <div className="space-y-4">
+                  <Label>Precisa de troco?</Label>
+                  <Select
+                    value={needChange ? "yes" : "no"}
+                    onValueChange={(value) => setNeedChange(value === "yes")}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione se precisa de troco" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="yes">Sim</SelectItem>
+                      <SelectItem value="no">Não</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
-            {(payment === "cash" || payment === "cash_card") && needChange && (
-              <div className="space-y-4">
-                <Label htmlFor="changeAmount">Troco para quanto?</Label>
-                <Input
-                  id="changeAmount"
-                  type="text"
-                  placeholder="Digite o valor"
-                  value={changeAmount}
-                  onChange={(e) => setChangeAmount(e.target.value)}
-                />
-              </div>
-            )}
+              {(payment === "cash" || payment === "cash_card") && needChange && (
+                <div className="space-y-4">
+                  <Label htmlFor="changeAmount">Troco para quanto?</Label>
+                  <Input
+                    id="changeAmount"
+                    type="text"
+                    placeholder="Digite o valor"
+                    value={changeAmount}
+                    onChange={(e) => setChangeAmount(e.target.value)}
+                  />
+                </div>
+              )}
 
-            {!showSummary ? (
-              <Button
-                type="button"
-                className="w-full bg-primary text-white hover:bg-primary-dark"
-                onClick={handleVerifySummary}
-              >
-                <ShoppingCart className="w-5 h-5 mr-2" />
-                Verificar Resumo
-              </Button>
-            ) : (
-              <div className="space-y-4">
-                <Card>
-                  <CardContent className="pt-6">
-                    <pre className="whitespace-pre-wrap font-mono text-sm">
-                      {generateOrderSummary()}
-                    </pre>
-                  </CardContent>
-                </Card>
+              {!showSummary ? (
                 <Button
                   type="button"
-                  className="w-full py-6 text-lg bg-green-600 hover:bg-green-700 text-white transition-colors"
-                  onClick={handleWhatsAppOrder}
+                  className="w-full bg-primary text-white hover:bg-primary-dark"
+                  onClick={handleVerifySummary}
                 >
-                  <Check className="w-6 h-6 mr-2" />
-                  Confirmar Pedido no WhatsApp
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  Verificar Resumo
                 </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              ) : (
+                <div className="space-y-4">
+                  <Card>
+                    <CardContent className="pt-6">
+                      <pre className="whitespace-pre-wrap font-mono text-sm">
+                        {generateOrderSummary()}
+                      </pre>
+                    </CardContent>
+                  </Card>
+                  <Button
+                    type="button"
+                    className="w-full py-6 text-lg bg-green-600 hover:bg-green-700 text-white transition-colors"
+                    onClick={handleWhatsAppOrder}
+                  >
+                    <Check className="w-6 h-6 mr-2" />
+                    Confirmar Pedido no WhatsApp
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
       
       {/* Footer - Only show after order confirmation */}
