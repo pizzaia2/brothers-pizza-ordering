@@ -1,9 +1,17 @@
 import { Link } from "react-router-dom";
-import { Pizza } from "lucide-react";
+import { Pizza, Home } from "lucide-react";
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <header className="bg-primary text-white py-4 px-6 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2 hover:text-secondary transition-colors">
+          <Home className="w-5 h-5" />
+          <span className="font-quicksand">Página inicial</span>
+        </Link>
+        <h2 className="font-quicksand font-bold text-xl">Brother's Pizzaria</h2>
+      </header>
+
       <main className="flex-grow">
         <div 
           className="relative h-[80vh] flex items-center justify-center bg-cover bg-center"
