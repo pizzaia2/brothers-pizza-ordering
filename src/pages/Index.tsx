@@ -16,7 +16,7 @@ const Index = () => {
         <div 
           className="relative h-[80vh] flex items-center justify-center bg-cover bg-center"
           style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1618160702438-9b02ab6515c9')",
+            backgroundImage: "url('https://unsplash.com/pt-br/fotografias/pizza-com-calabresa-e-queijo-na-mesa-de-laranja-xLfqx4Psf94')",
           }}
         >
           <div className="absolute inset-0 bg-black/50" />
