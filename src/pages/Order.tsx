@@ -144,9 +144,9 @@ const Order = () => {
   });
 
   // Add pizzaSizes state to sync with localStorage
-  const [pizzaSizes, setPizzaSizes] = useState<PizzaSize[]>(() => {
+  const [availablePizzaSizes, setPizzaSizes] = useState<PizzaSize[]>(() => {
     const storedSizes = localStorage.getItem('pizzaSizes');
-    return storedSizes ? JSON.parse(storedSizes) : initialPizzaSizes;
+    return storedSizes ? JSON.parse(storedSizes) : pizzaSizes;
   });
 
   // Update when localStorage changes
@@ -166,7 +166,7 @@ const Order = () => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  const selectedSize = pizzaSizes.find((s) => s.id === size);
+  const selectedSize = availablePizzaSizes.find((s) => s.id === size);
   
   const orderTotal = useMemo(() => {
     if (!selectedFlavors.length) return 0;
@@ -289,7 +289,7 @@ const Order = () => {
 
   const generateOrderSummary = () => {
     const cartItemsSummary = cart.map((item, index) => {
-      const sizeInfo = pizzaSizes.find(s => s.id === item.size);
+      const sizeInfo = availablePizzaSizes.find(s => s.id === item.size);
       const flavorNames = item.flavors
         .map(id => pizzaFlavors.find(f => f.id === id)?.name)
         .join(", ");
@@ -531,7 +531,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
 
               <h3 className="text-2xl font-bold text-primary">Tamanho da Pizza</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {pizzaSizes.map((pizzaSize) => (
+                {availablePizzaSizes.map((pizzaSize) => (
                   <Button
                     key={pizzaSize.id}
                     type="button"
@@ -619,7 +619,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                   <h3 className="text-2xl font-bold text-primary">Carrinho</h3>
                   <div className="space-y-4">
                     {cart.map((item, index) => {
-                      const sizeInfo = pizzaSizes.find(s => s.id === item.size);
+                      const sizeInfo = availablePizzaSizes.find(s => s.id === item.size);
                       const flavorNames = item.flavors
                         .map(id => pizzaFlavors.find(f => f.id === id)?.name)
                         .join(", ");
@@ -789,4 +789,3 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
 };
 
 export default Order;
-
