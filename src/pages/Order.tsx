@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Home } from "lucide-react";
@@ -134,13 +134,17 @@ const Order = () => {
   const [removeIngredients, setRemoveIngredients] = useState("");
   const [showSummary, setShowSummary] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
-  
-  // Add new state for pizza flavors
-  const [pizzaFlavors, setPizzaFlavors] = useState(
-    window.localStorage.getItem('pizzaFlavors') 
-      ? JSON.parse(window.localStorage.getItem('pizzaFlavors')!)
-      : initialPizzaFlavors
-  );
+
+  // Update pizzaFlavors state to sync with localStorage
+  const [pizzaFlavors, setPizzaFlavors] = useState<PizzaFlavor[]>(() => {
+    const storedFlavors = localStorage.getItem('pizzaFlavors');
+    return storedFlavors ? JSON.parse(storedFlavors) : initialPizzaFlavors;
+  });
+
+  // Add effect to update localStorage when pizzaFlavors changes
+  useEffect(() => {
+    localStorage.setItem('pizzaFlavors', JSON.stringify(pizzaFlavors));
+  }, [pizzaFlavors]);
 
   const selectedSize = pizzaSizes.find((s) => s.id === size);
   
