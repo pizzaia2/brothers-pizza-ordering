@@ -788,4 +788,88 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
   );
 };
 
+import React from "react";
+
+interface PizzaFlavor {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  available: boolean;
+}
+
+// Dados dos sabores de pizza
+const initialPizzaFlavors: PizzaFlavor[] = [
+  { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35, available: false }, // Indisponível
+  { id: "bacalhau", name: "Bacalhau", description: "Molho de tomate, muçarela, orégano, azeitona e bacalhau", category: "tradicional", price: 35, available: true },
+  { id: "mussarela", name: "Mussarela", description: "Molho de tomate, muçarela e orégano", category: "tradicional", price: 35, available: true },
+  { id: "calabresa", name: "Calabresa", description: "Molho de tomate, muçarela, orégano, cebola e calabresa", category: "tradicional", price: 35, available: true },
+];
+
+const PizzaList: React.FC = () => {
+  // Separando os sabores disponíveis e os em falta
+  const availableFlavors = initialPizzaFlavors.filter(flavor => flavor.available);
+  const unavailableFlavors = initialPizzaFlavors.filter(flavor => !flavor.available);
+
+  return (
+    <div>
+      <h2>Sabores Disponíveis</h2>
+      <ul>
+        {availableFlavors.map((flavor) => (
+          <li
+            key={flavor.id}
+            className="pizza-item"
+            onClick={() => alert(`Você escolheu: ${flavor.name}`)}
+          >
+            {flavor.name}
+          </li>
+        ))}
+      </ul>
+
+      {/* Exibindo apenas "Alho" na seção de sabores em falta */}
+      {unavailableFlavors.length > 0 && (
+        <>
+          <h2>Sabores em Falta</h2>
+          <ul>
+            {unavailableFlavors.map((flavor) => (
+              <li key={flavor.id} className="pizza-item unavailable">
+                {flavor.name} (Em falta)
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {/* Estilos */}
+      <style>
+        {`
+          .pizza-item {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid black;
+            cursor: pointer;
+            list-style: none;
+            transition: 0.3s;
+          }
+
+          .pizza-item:hover {
+            background: #f0f0f0;
+          }
+
+          .unavailable {
+            color: red;
+            border-color: red;
+            cursor: not-allowed;
+            background: #ffe6e6;
+          }
+        `}
+      </style>
+    </div>
+  );
+};
+
+export default PizzaList;
+
+
 export default Order;
