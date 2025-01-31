@@ -28,19 +28,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-// Define the pizza sizes type and data
-interface PizzaSize {
-  id: string;
-  name: string;
-  slices: number;
-  maxFlavors: number;
-  available?: boolean;
-}
-
+// Update pizza sizes definition
 const initialPizzaSizes: PizzaSize[] = [
-  { id: "small", name: "Pequena", slices: 6, maxFlavors: 1, available: true },
-  { id: "medium", name: "Média", slices: 8, maxFlavors: 2, available: true },
-  { id: "large", name: "Grande", slices: 10, maxFlavors: 3, available: true },
+  { id: "medium", name: "Média", slices: 6, maxFlavors: 2, available: true },
+  { id: "large", name: "Grande", slices: 8, maxFlavors: 3, available: true },
+  { id: "family", name: "Família", slices: 12, maxFlavors: 4, available: true },
 ];
 
 // Define the neighborhoods type and data
@@ -788,3 +780,4 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
 };
 
 export default Order;
+
