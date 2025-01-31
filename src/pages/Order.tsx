@@ -38,10 +38,10 @@ interface PizzaSize {
 }
 
 // Update pizza sizes definition
-const initialPizzaSizes: PizzaSize[] = [
-  { id: "medium", name: "Média", slices: 6, maxFlavors: 2, available: true },
-  { id: "large", name: "Grande", slices: 8, maxFlavors: 3, available: true },
-  { id: "family", name: "Família", slices: 12, maxFlavors: 4, available: true },
+const pizzaSizes: PizzaSize[] = [
+  { id: "medium", name: "Média", slices: 6, maxFlavors: 2 },
+  { id: "large", name: "Grande", slices: 8, maxFlavors: 3 },
+  { id: "family", name: "Família", slices: 12, maxFlavors: 4 },
 ];
 
 // Define the neighborhoods type and data

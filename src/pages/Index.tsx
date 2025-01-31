@@ -1,53 +1,7 @@
 import { Link } from "react-router-dom";
-import { Pizza, Home, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import AdminPanel from "@/components/AdminPanel";
-
-// Define the pizza flavors type
-interface PizzaFlavor {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  available?: boolean;
-}
-
-// Initial pizza flavors data
-const initialPizzaFlavors: PizzaFlavor[] = [
-  // Tradicionais
-  { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35, available: true },
-  { id: "bacalhau", name: "Bacalhau", description: "Molho de tomate, muçarela, orégano, azeitona e bacalhau", category: "tradicional", price: 35, available: true },
-  { id: "bacalhau_teriyaki", name: "Bacalhau Teriyaki", description: "Molho de tomate, muçarela, orégano, bacalhau, cream cheese, cebolinha e molho teriyaki", category: "tradicional", price: 38, available: true },
-  { id: "mussarela", name: "Mussarela", description: "Molho de tomate, muçarela e orégano", category: "tradicional", price: 35, available: true },
-  { id: "calabresa", name: "Calabresa", description: "Molho de tomate, muçarela, orégano, cebola e calabresa", category: "tradicional", price: 35, available: true },
-  { id: "portuguesa", name: "Portuguesa", description: "Molho de tomate, muçarela, orégano, presunto, ovo, tomate, pimentão, cebola e azeitona", category: "tradicional", price: 38, available: true },
-  // Especiais
-  { id: "atum", name: "Atum", description: "Molho de tomate, muçarela, orégano, atum e cebola", category: "especial", price: 42, available: true },
-  { id: "atum_catupiry", name: "Atum Catupiry", description: "Molho de tomate, muçarela, orégano, atum e catupiry", category: "especial", price: 45, available: true },
-  { id: "frango_catupiry", name: "Frango com Catupiry", description: "Molho de tomate, muçarela, orégano, frango e catupiry", category: "especial", price: 42, available: true },
-  { id: "quatro_queijos", name: "Quatro Queijos", description: "Molho de tomate, muçarela, orégano, parmesão, catupiry e gorgonzola", category: "especial", price: 45, available: true },
-  // Doces
-  { id: "brigadeiro", name: "Brigadeiro", description: "Muçarela, brigadeiro e granulado", category: "doce", price: 40, available: true },
-  { id: "brigadeiro_morango", name: "Brigadeiro com Morango", description: "Muçarela, brigadeiro, morango e granulado", category: "doce", price: 40, available: true },
-  { id: "chocolate", name: "Chocolate", description: "Muçarela e chocolate ao leite", category: "doce", price: 40, available: true },
-  { id: "romeu_julieta", name: "Romeu e Julieta", description: "Muçarela e goiabada", category: "doce", price: 40, available: true },
-  { id: "queijo_coalho_goiabada", name: "Queijo Coalho com Goiabada", description: "Muçarela e goiabada", category: "doce", price: 42, available: true },
-];
+import { Pizza, Home } from "lucide-react";
 
 const Index = () => {
-  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
-  const [pizzaFlavors, setPizzaFlavors] = useState<PizzaFlavor[]>(initialPizzaFlavors);
-
-  const handleUpdateFlavor = (flavorId: string, available: boolean) => {
-    setPizzaFlavors(prevFlavors =>
-      prevFlavors.map(flavor =>
-        flavor.id === flavorId ? { ...flavor, available } : flavor
-      )
-    );
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-primary text-white py-4 px-6 flex items-center justify-between">
@@ -56,14 +10,6 @@ const Index = () => {
           <span className="font-quicksand">Página inicial</span>
         </Link>
         <h2 className="font-quicksand font-bold text-xl">Brother's Pizzaria</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsAdminPanelOpen(true)}
-          className="text-white hover:text-secondary"
-        >
-          <Settings className="w-5 h-5" />
-        </Button>
       </header>
 
       <main className="flex-grow">
@@ -112,13 +58,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-
-      <AdminPanel
-        isOpen={isAdminPanelOpen}
-        onClose={() => setIsAdminPanelOpen(false)}
-        flavors={pizzaFlavors}
-        onUpdateFlavor={handleUpdateFlavor}
-      />
     </div>
   );
 };
