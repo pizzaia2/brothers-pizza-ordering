@@ -34,12 +34,13 @@ interface PizzaSize {
   name: string;
   slices: number;
   maxFlavors: number;
+  available?: boolean;
 }
 
-const pizzaSizes: PizzaSize[] = [
-  { id: "small", name: "Pequena", slices: 6, maxFlavors: 1 },
-  { id: "medium", name: "Média", slices: 8, maxFlavors: 2 },
-  { id: "large", name: "Grande", slices: 10, maxFlavors: 3 },
+const initialPizzaSizes: PizzaSize[] = [
+  { id: "small", name: "Pequena", slices: 6, maxFlavors: 1, available: true },
+  { id: "medium", name: "Média", slices: 8, maxFlavors: 2, available: true },
+  { id: "large", name: "Grande", slices: 10, maxFlavors: 3, available: true },
 ];
 
 // Define the neighborhoods type and data
@@ -141,10 +142,28 @@ const Order = () => {
     return storedFlavors ? JSON.parse(storedFlavors) : initialPizzaFlavors;
   });
 
-  // Add effect to update localStorage when pizzaFlavors changes
+  // Add pizzaSizes state to sync with localStorage
+  const [pizzaSizes, setPizzaSizes] = useState<PizzaSize[]>(() => {
+    const storedSizes = localStorage.getItem('pizzaSizes');
+    return storedSizes ? JSON.parse(storedSizes) : initialPizzaSizes;
+  });
+
+  // Update when localStorage changes
   useEffect(() => {
-    localStorage.setItem('pizzaFlavors', JSON.stringify(pizzaFlavors));
-  }, [pizzaFlavors]);
+    const handleStorageChange = () => {
+      const storedFlavors = localStorage.getItem('pizzaFlavors');
+      if (storedFlavors) {
+        setPizzaFlavors(JSON.parse(storedFlavors));
+      }
+      const storedSizes = localStorage.getItem('pizzaSizes');
+      if (storedSizes) {
+        setPizzaSizes(JSON.parse(storedSizes));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const selectedSize = pizzaSizes.find((s) => s.id === size);
   

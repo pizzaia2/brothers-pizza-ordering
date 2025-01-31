@@ -21,12 +21,26 @@ interface PizzaFlavor {
   available?: boolean;
 }
 
+interface PizzaSize {
+  id: string;
+  name: string;
+  slices: number;
+  maxFlavors: number;
+  available?: boolean;
+}
+
 interface AdminPanelProps {
   isOpen: boolean;
   onClose: () => void;
   flavors: PizzaFlavor[];
   onUpdateFlavor: (flavorId: string, available: boolean) => void;
 }
+
+const pizzaSizes: PizzaSize[] = [
+  { id: "small", name: "Pequena", slices: 6, maxFlavors: 1, available: true },
+  { id: "medium", name: "Média", slices: 8, maxFlavors: 2, available: true },
+  { id: "large", name: "Grande", slices: 10, maxFlavors: 3, available: true },
+];
 
 const AdminPanel: React.FC<AdminPanelProps> = ({
   isOpen,
@@ -37,6 +51,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [sizes, setSizes] = useState<PizzaSize[]>(pizzaSizes);
   const { toast } = useToast();
 
   const handleLogin = (e: React.FormEvent) => {
@@ -60,6 +75,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     setIsLoggedIn(false);
     setUsername("");
     setPassword("");
+  };
+
+  const handleUpdateSize = (sizeId: string, available: boolean) => {
+    setSizes(prevSizes =>
+      prevSizes.map(size =>
+        size.id === sizeId ? { ...size, available } : size
+      )
+    );
+    localStorage.setItem('pizzaSizes', JSON.stringify(
+      sizes.map(size =>
+        size.id === sizeId ? { ...size, available } : size
+      )
+    ));
   };
 
   const getCategoryIcon = (category: string) => {
@@ -138,11 +166,53 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         ) : (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold">Gerenciar Sabores</h3>
+              <h3 className="text-xl font-semibold">Gerenciar Tamanhos</h3>
               <Button variant="outline" onClick={handleLogout}>
                 Sair
               </Button>
             </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Tamanhos Disponíveis</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {sizes.map((size) => (
+                    <div
+                      key={size.id}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                    >
+                      <div>
+                        <h4 className="font-medium">{size.name}</h4>
+                        <p className="text-sm text-gray-600">
+                          {size.slices} fatias, até {size.maxFlavors} sabores
+                        </p>
+                      </div>
+                      <Button
+                        variant={size.available ? "outline" : "destructive"}
+                        onClick={() => handleUpdateSize(size.id, !size.available)}
+                        className="min-w-[120px]"
+                      >
+                        {size.available ? (
+                          <>
+                            <Check className="w-4 h-4 mr-2" />
+                            Disponível
+                          </>
+                        ) : (
+                          <>
+                            <X className="w-4 h-4 mr-2" />
+                            Indisponível
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            
+            <h3 className="text-xl font-semibold">Gerenciar Sabores</h3>
             
             {["tradicional", "especial", "doce"].map((category) => (
               <Card key={category} className="overflow-hidden">
