@@ -28,6 +28,35 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+// Define the pizza sizes type and data
+interface PizzaSize {
+  id: string;
+  name: string;
+  slices: number;
+  maxFlavors: number;
+}
+
+const pizzaSizes: PizzaSize[] = [
+  { id: "small", name: "Pequena", slices: 6, maxFlavors: 1 },
+  { id: "medium", name: "Média", slices: 8, maxFlavors: 2 },
+  { id: "large", name: "Grande", slices: 10, maxFlavors: 3 },
+];
+
+// Define the neighborhoods type and data
+interface Neighborhood {
+  id: string;
+  name: string;
+  deliveryFee: number;
+}
+
+const neighborhoods: Neighborhood[] = [
+  { id: "centro", name: "Centro", deliveryFee: 5 },
+  { id: "cajueiro", name: "Cajueiro", deliveryFee: 5 },
+  { id: "santa_luzia", name: "Santa Luzia", deliveryFee: 6 },
+  { id: "alto_bonito", name: "Alto Bonito", deliveryFee: 6 },
+  { id: "santo_antonio", name: "Santo Antônio", deliveryFee: 7 },
+];
+
 // Define the pizza flavors type
 interface PizzaFlavor {
   id: string;
@@ -37,6 +66,31 @@ interface PizzaFlavor {
   price: number;
   available?: boolean;
 }
+
+// Define the cart item type
+interface CartItem {
+  size: string;
+  flavors: string[];
+  notes: string;
+  removeIngredients: string;
+  total: number;
+}
+
+// Helper function to display payment method
+const getPaymentMethodDisplay = (method: string): string => {
+  switch (method) {
+    case "pix":
+      return "PIX";
+    case "card":
+      return "Cartão de crédito/débito";
+    case "cash":
+      return "Dinheiro";
+    case "cash_card":
+      return "Dinheiro e cartão";
+    default:
+      return method;
+  }
+};
 
 // Initial pizza flavors data
 const initialPizzaFlavors: PizzaFlavor[] = [
