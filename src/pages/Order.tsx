@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Home } from "lucide-react";
@@ -28,48 +28,58 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-// Define the pizza sizes type
 interface PizzaSize {
   id: string;
   name: string;
   slices: number;
   maxFlavors: number;
-  available?: boolean;
 }
-
-// Update pizza sizes definition
-const pizzaSizes: PizzaSize[] = [
-  { id: "medium", name: "Média", slices: 6, maxFlavors: 2 },
-  { id: "large", name: "Grande", slices: 8, maxFlavors: 3 },
-  { id: "family", name: "Família", slices: 12, maxFlavors: 4 },
-];
-
-// Define the neighborhoods type and data
-interface Neighborhood {
-  id: string;
-  name: string;
-  deliveryFee: number;
-}
-
-const neighborhoods: Neighborhood[] = [
-  { id: "centro", name: "Centro", deliveryFee: 5 },
-  { id: "cajueiro", name: "Cajueiro", deliveryFee: 5 },
-  { id: "santa_luzia", name: "Santa Luzia", deliveryFee: 6 },
-  { id: "alto_bonito", name: "Alto Bonito", deliveryFee: 6 },
-  { id: "santo_antonio", name: "Santo Antônio", deliveryFee: 7 },
-];
-
-// Define the pizza flavors type
 interface PizzaFlavor {
   id: string;
   name: string;
   description: string;
   category: string;
   price: number;
-  available?: boolean;
+}
+interface Neighborhood {
+  id: string;
+  name: string;
+  deliveryFee: number;
 }
 
-// Define the cart item type
+const pizzaSizes: PizzaSize[] = [
+  { id: "media", name: "Média", slices: 6, maxFlavors: 2 },
+  { id: "grande", name: "Grande", slices: 8, maxFlavors: 3 },
+  { id: "familia", name: "Família", slices: 12, maxFlavors: 4 },
+];
+
+const pizzaFlavors: PizzaFlavor[] = [
+  // Tradicionais
+  { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35 },
+  { id: "bacalhau", name: "Bacalhau", description: "Molho de tomate, muçarela, orégano, azeitona e bacalhau", category: "tradicional", price: 35 },
+  { id: "bacalhau_teriyaki", name: "Bacalhau Teriyaki", description: "Molho de tomate, muçarela, orégano, bacalhau, cream cheese, cebolinha e molho teriyaki", category: "tradicional", price: 38 },
+  { id: "mussarela", name: "Mussarela", description: "Molho de tomate, muçarela e orégano", category: "tradicional", price: 35 },
+  { id: "calabresa", name: "Calabresa", description: "Molho de tomate, muçarela, orégano, cebola e calabresa", category: "tradicional", price: 35 },
+  { id: "portuguesa", name: "Portuguesa", description: "Molho de tomate, muçarela, orégano, presunto, ovo, tomate, pimentão, cebola e azeitona", category: "tradicional", price: 38 },
+  // Especiais
+  { id: "atum", name: "Atum", description: "Molho de tomate, muçarela, orégano, atum e cebola", category: "especial", price: 42 },
+  { id: "atum_catupiry", name: "Atum Catupiry", description: "Molho de tomate, muçarela, orégano, atum e catupiry", category: "especial", price: 45 },
+  { id: "frango_catupiry", name: "Frango com Catupiry", description: "Molho de tomate, muçarela, orégano, frango e catupiry", category: "especial", price: 42 },
+  { id: "quatro_queijos", name: "Quatro Queijos", description: "Molho de tomate, muçarela, orégano, parmesão, catupiry e gorgonzola", category: "especial", price: 45 },
+  // Doces
+  { id: "brigadeiro", name: "Brigadeiro", description: "Muçarela, brigadeiro e granulado", category: "doce", price: 40 },
+  { id: "brigadeiro_morango", name: "Brigadeiro com Morango", description: "Muçarela, brigadeiro, morango e granulado", category: "doce", price: 40 },
+  { id: "chocolate", name: "Chocolate", description: "Muçarela e chocolate ao leite", category: "doce", price: 40 },
+  { id: "romeu_julieta", name: "Romeu e Julieta", description: "Muçarela e goiabada", category: "doce", price: 40 },
+  { id: "queijo_coalho_goiabada", name: "Queijo Coalho com Goiabada", description: "Muçarela e goiabada", category: "doce", price: 42 },
+];
+
+const neighborhoods: Neighborhood[] = [
+  { id: "centro", name: "Centro", deliveryFee: 8.00 },
+  { id: "santa_cruz", name: "Santa Cruz", deliveryFee: 8.00 },
+  { id: "santo_antonio", name: "Santo Antônio", deliveryFee: 7.00 }
+];
+
 interface CartItem {
   size: string;
   flavors: string[];
@@ -78,43 +88,20 @@ interface CartItem {
   total: number;
 }
 
-// Helper function to display payment method
-const getPaymentMethodDisplay = (method: string): string => {
+const getPaymentMethodDisplay = (method: string) => {
   switch (method) {
-    case "pix":
-      return "PIX";
-    case "card":
-      return "Cartão de crédito/débito";
     case "cash":
       return "Dinheiro";
+    case "card":
+      return "Cartão";
+    case "pix":
+      return "PIX";
     case "cash_card":
-      return "Dinheiro e cartão";
+      return "Dinheiro e Cartão";
     default:
       return method;
   }
 };
-
-// Initial pizza flavors data
-const initialPizzaFlavors: PizzaFlavor[] = [
-  // Tradicionais
-  { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35, available: true },
-  { id: "bacalhau", name: "Bacalhau", description: "Molho de tomate, muçarela, orégano, azeitona e bacalhau", category: "tradicional", price: 35, available: true },
-  { id: "bacalhau_teriyaki", name: "Bacalhau Teriyaki", description: "Molho de tomate, muçarela, orégano, bacalhau, cream cheese, cebolinha e molho teriyaki", category: "tradicional", price: 38, available: true },
-  { id: "mussarela", name: "Mussarela", description: "Molho de tomate, muçarela e orégano", category: "tradicional", price: 35, available: true },
-  { id: "calabresa", name: "Calabresa", description: "Molho de tomate, muçarela, orégano, cebola e calabresa", category: "tradicional", price: 35, available: true },
-  { id: "portuguesa", name: "Portuguesa", description: "Molho de tomate, muçarela, orégano, presunto, ovo, tomate, pimentão, cebola e azeitona", category: "tradicional", price: 38, available: true },
-  // Especiais
-  { id: "atum", name: "Atum", description: "Molho de tomate, muçarela, orégano, atum e cebola", category: "especial", price: 42, available: true },
-  { id: "atum_catupiry", name: "Atum Catupiry", description: "Molho de tomate, muçarela, orégano, atum e catupiry", category: "especial", price: 45, available: true },
-  { id: "frango_catupiry", name: "Frango com Catupiry", description: "Molho de tomate, muçarela, orégano, frango e catupiry", category: "especial", price: 42, available: true },
-  { id: "quatro_queijos", name: "Quatro Queijos", description: "Molho de tomate, muçarela, orégano, parmesão, catupiry e gorgonzola", category: "especial", price: 45, available: true },
-  // Doces
-  { id: "brigadeiro", name: "Brigadeiro", description: "Muçarela, brigadeiro e granulado", category: "doce", price: 40, available: true },
-  { id: "brigadeiro_morango", name: "Brigadeiro com Morango", description: "Muçarela, brigadeiro, morango e granulado", category: "doce", price: 40, available: true },
-  { id: "chocolate", name: "Chocolate", description: "Muçarela e chocolate ao leite", category: "doce", price: 40, available: true },
-  { id: "romeu_julieta", name: "Romeu e Julieta", description: "Muçarela e goiabada", category: "doce", price: 40, available: true },
-  { id: "queijo_coalho_goiabada", name: "Queijo Coalho com Goiabada", description: "Muçarela e goiabada", category: "doce", price: 42, available: true },
-];
 
 const Order = () => {
   const { toast } = useToast();
@@ -136,37 +123,8 @@ const Order = () => {
   const [removeIngredients, setRemoveIngredients] = useState("");
   const [showSummary, setShowSummary] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
-
-  // Update pizzaFlavors state to sync with localStorage
-  const [pizzaFlavors, setPizzaFlavors] = useState<PizzaFlavor[]>(() => {
-    const storedFlavors = localStorage.getItem('pizzaFlavors');
-    return storedFlavors ? JSON.parse(storedFlavors) : initialPizzaFlavors;
-  });
-
-  // Add pizzaSizes state to sync with localStorage
-  const [availablePizzaSizes, setPizzaSizes] = useState<PizzaSize[]>(() => {
-    const storedSizes = localStorage.getItem('pizzaSizes');
-    return storedSizes ? JSON.parse(storedSizes) : pizzaSizes;
-  });
-
-  // Update when localStorage changes
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const storedFlavors = localStorage.getItem('pizzaFlavors');
-      if (storedFlavors) {
-        setPizzaFlavors(JSON.parse(storedFlavors));
-      }
-      const storedSizes = localStorage.getItem('pizzaSizes');
-      if (storedSizes) {
-        setPizzaSizes(JSON.parse(storedSizes));
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  const selectedSize = availablePizzaSizes.find((s) => s.id === size);
+  
+  const selectedSize = pizzaSizes.find((s) => s.id === size);
   
   const orderTotal = useMemo(() => {
     if (!selectedFlavors.length) return 0;
@@ -196,16 +154,6 @@ const Order = () => {
   }, [cart, address.neighborhood, isPickup]);
 
   const handleFlavorSelect = (flavorId: string) => {
-    const flavor = pizzaFlavors.find(f => f.id === flavorId);
-    if (!flavor?.available) {
-      toast({
-        title: "Sabor indisponível",
-        description: "Este sabor está temporariamente indisponível.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!selectedSize) return;
     if (selectedFlavors.includes(flavorId)) {
       setSelectedFlavors(selectedFlavors.filter((id) => id !== flavorId));
@@ -233,21 +181,6 @@ const Order = () => {
   };
 
   const handleAddToCart = () => {
-    // Check if any selected flavor is unavailable
-    const hasUnavailableFlavor = selectedFlavors.some(flavorId => {
-      const flavor = pizzaFlavors.find(f => f.id === flavorId);
-      return !flavor?.available;
-    });
-
-    if (hasUnavailableFlavor) {
-      toast({
-        title: "Sabor indisponível",
-        description: "Um ou mais sabores selecionados estão temporariamente indisponíveis.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!size || selectedFlavors.length === 0) {
       toast({
         title: "Campos obrigatórios",
@@ -289,7 +222,7 @@ const Order = () => {
 
   const generateOrderSummary = () => {
     const cartItemsSummary = cart.map((item, index) => {
-      const sizeInfo = availablePizzaSizes.find(s => s.id === item.size);
+      const sizeInfo = pizzaSizes.find(s => s.id === item.size);
       const flavorNames = item.flavors
         .map(id => pizzaFlavors.find(f => f.id === id)?.name)
         .join(", ");
@@ -380,41 +313,6 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
         return "🍽️";
     }
   };
-
-  const renderFlavorItem = (flavor: PizzaFlavor) => (
-    <div
-      key={flavor.id}
-      className={`p-4 rounded-lg cursor-pointer transition-all ${
-        !flavor.available 
-          ? 'bg-red-50 opacity-75 cursor-not-allowed'
-          : selectedFlavors.includes(flavor.id)
-          ? "bg-primary/10 border-2 border-primary shadow-md"
-          : "hover:bg-primary/5 border-2 border-transparent hover:shadow-sm"
-      }`}
-      onClick={() => handleFlavorSelect(flavor.id)}
-    >
-      <div className="flex items-start justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Pizza className="w-5 h-5 text-primary" />
-            <span className={`font-bold ${!flavor.available ? 'text-red-500' : ''}`}>
-              {flavor.name}
-              {!flavor.available && ' (Indisponível)'}
-            </span>
-            {selectedFlavors.includes(flavor.id) && (
-              <Check className="w-5 h-5 text-primary" />
-            )}
-          </div>
-          <p className="text-sm text-gray-600">
-            {flavor.description}
-          </p>
-        </div>
-        <span className="font-bold text-primary">
-          R$ {flavor.price.toFixed(2)}
-        </span>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-secondary">
@@ -531,7 +429,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
 
               <h3 className="text-2xl font-bold text-primary">Tamanho da Pizza</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {availablePizzaSizes.map((pizzaSize) => (
+                {pizzaSizes.map((pizzaSize) => (
                   <Button
                     key={pizzaSize.id}
                     type="button"
@@ -586,7 +484,35 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                           <div className="space-y-2 p-2">
                             {pizzaFlavors
                               .filter((flavor) => flavor.category === category)
-                              .map((flavor) => renderFlavorItem(flavor))}
+                              .map((flavor) => (
+                                <div
+                                  key={flavor.id}
+                                  className={`p-4 rounded-lg cursor-pointer transition-all ${
+                                    selectedFlavors.includes(flavor.id)
+                                      ? "bg-primary/10 border-2 border-primary shadow-md"
+                                      : "hover:bg-primary/5 border-2 border-transparent hover:shadow-sm"
+                                  }`}
+                                  onClick={() => handleFlavorSelect(flavor.id)}
+                                >
+                                  <div className="flex items-start justify-between">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-2">
+                                        <Pizza className="w-5 h-5 text-primary" />
+                                        <span className="font-bold">{flavor.name}</span>
+                                        {selectedFlavors.includes(flavor.id) && (
+                                          <Check className="w-5 h-5 text-primary" />
+                                        )}
+                                      </div>
+                                      <p className="text-sm text-gray-600">
+                                        {flavor.description}
+                                      </p>
+                                    </div>
+                                    <span className="font-bold text-primary">
+                                      R$ {flavor.price.toFixed(2)}
+                                    </span>
+                                  </div>
+                                </div>
+                              ))}
                           </div>
                         </AccordionContent>
                       </AccordionItem>
@@ -619,7 +545,7 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
                   <h3 className="text-2xl font-bold text-primary">Carrinho</h3>
                   <div className="space-y-4">
                     {cart.map((item, index) => {
-                      const sizeInfo = availablePizzaSizes.find(s => s.id === item.size);
+                      const sizeInfo = pizzaSizes.find(s => s.id === item.size);
                       const flavorNames = item.flavors
                         .map(id => pizzaFlavors.find(f => f.id === id)?.name)
                         .join(", ");
@@ -787,89 +713,5 @@ ${payment === "pix" ? "Nossa chave PIX é (75) 988510206 - Jeferson Barboza" : "
     </div>
   );
 };
-
-import React from "react";
-
-interface PizzaFlavor {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  available: boolean;
-}
-
-// Dados dos sabores de pizza
-const initialPizzaFlavors: PizzaFlavor[] = [
-  { id: "alho", name: "Alho", description: "Molho de tomate, muçarela, orégano, alho e azeitona", category: "tradicional", price: 35, available: false }, // Indisponível
-  { id: "bacalhau", name: "Bacalhau", description: "Molho de tomate, muçarela, orégano, azeitona e bacalhau", category: "tradicional", price: 35, available: true },
-  { id: "mussarela", name: "Mussarela", description: "Molho de tomate, muçarela e orégano", category: "tradicional", price: 35, available: true },
-  { id: "calabresa", name: "Calabresa", description: "Molho de tomate, muçarela, orégano, cebola e calabresa", category: "tradicional", price: 35, available: true },
-];
-
-const PizzaList: React.FC = () => {
-  // Separando os sabores disponíveis e os em falta
-  const availableFlavors = initialPizzaFlavors.filter(flavor => flavor.available);
-  const unavailableFlavors = initialPizzaFlavors.filter(flavor => !flavor.available);
-
-  return (
-    <div>
-      <h2>Sabores Disponíveis</h2>
-      <ul>
-        {availableFlavors.map((flavor) => (
-          <li
-            key={flavor.id}
-            className="pizza-item"
-            onClick={() => alert(`Você escolheu: ${flavor.name}`)}
-          >
-            {flavor.name}
-          </li>
-        ))}
-      </ul>
-
-      {/* Exibindo apenas "Alho" na seção de sabores em falta */}
-      {unavailableFlavors.length > 0 && (
-        <>
-          <h2>Sabores em Falta</h2>
-          <ul>
-            {unavailableFlavors.map((flavor) => (
-              <li key={flavor.id} className="pizza-item unavailable">
-                {flavor.name} (Em falta)
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      {/* Estilos */}
-      <style>
-        {`
-          .pizza-item {
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid black;
-            cursor: pointer;
-            list-style: none;
-            transition: 0.3s;
-          }
-
-          .pizza-item:hover {
-            background: #f0f0f0;
-          }
-
-          .unavailable {
-            color: red;
-            border-color: red;
-            cursor: not-allowed;
-            background: #ffe6e6;
-          }
-        `}
-      </style>
-    </div>
-  );
-};
-
-export default PizzaList;
-
 
 export default Order;
