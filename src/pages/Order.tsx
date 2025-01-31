@@ -28,6 +28,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+// Define the pizza sizes type
+interface PizzaSize {
+  id: string;
+  name: string;
+  slices: number;
+  maxFlavors: number;
+  available?: boolean;
+}
+
 // Update pizza sizes definition
 const initialPizzaSizes: PizzaSize[] = [
   { id: "medium", name: "Média", slices: 6, maxFlavors: 2, available: true },
