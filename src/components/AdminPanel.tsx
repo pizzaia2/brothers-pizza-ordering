@@ -62,6 +62,32 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     setPassword("");
   };
 
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case "tradicional":
+        return "🍕";
+      case "especial":
+        return "⭐";
+      case "doce":
+        return "🍫";
+      default:
+        return "🍽️";
+    }
+  };
+
+  const getCategoryTitle = (category: string) => {
+    switch (category) {
+      case "tradicional":
+        return "Tradicionais";
+      case "especial":
+        return "Especiais";
+      case "doce":
+        return "Doces";
+      default:
+        return category;
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -119,11 +145,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
             
             {["tradicional", "especial", "doce"].map((category) => (
-              <Card key={category}>
-                <CardHeader>
-                  <CardTitle className="capitalize">{category}</CardTitle>
+              <Card key={category} className="overflow-hidden">
+                <CardHeader className={`
+                  ${category === "tradicional" ? "bg-gradient-to-r from-[#e6b980] to-[#eacda3]" : ""}
+                  ${category === "especial" ? "bg-gradient-to-r from-[#fdfcfb] to-[#e2d1c3]" : ""}
+                  ${category === "doce" ? "bg-gradient-to-r from-[#ffc3a0] to-[#ffafbd]" : ""}
+                `}>
+                  <CardTitle className="flex items-center gap-2">
+                    <span>{getCategoryIcon(category)}</span>
+                    <span className="capitalize">{getCategoryTitle(category)}</span>
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="mt-4">
                   <div className="space-y-4">
                     {flavors
                       .filter((flavor) => flavor.category === category)
@@ -136,6 +169,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                             <h4 className="font-medium">{flavor.name}</h4>
                             <p className="text-sm text-gray-600">
                               {flavor.description}
+                            </p>
+                            <p className="text-sm font-medium text-primary mt-1">
+                              R$ {flavor.price.toFixed(2)}
                             </p>
                           </div>
                           <Button

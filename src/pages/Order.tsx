@@ -213,6 +213,21 @@ const Order = () => {
   };
 
   const handleAddToCart = () => {
+    // Check if any selected flavor is unavailable
+    const hasUnavailableFlavor = selectedFlavors.some(flavorId => {
+      const flavor = pizzaFlavors.find(f => f.id === flavorId);
+      return !flavor?.available;
+    });
+
+    if (hasUnavailableFlavor) {
+      toast({
+        title: "Sabor indisponível",
+        description: "Um ou mais sabores selecionados estão temporariamente indisponíveis.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!size || selectedFlavors.length === 0) {
       toast({
         title: "Campos obrigatórios",
